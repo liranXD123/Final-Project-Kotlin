@@ -41,4 +41,8 @@
     <string name="unit_fahrenheit">פרנהייט</string>
     <string name="update_interval">מרווח עדכון</string>
     <string name="dark_mode">מצב כהה</string>
+    <string name="hello_blank_fragment">שלום פרגמנט ריק</string>
+    <string name="forecast_description">צפייה במגמות מזג האוויר בימים הקרובים</string>
+    <string name="weather_icon_desc">אייקון מזג אוויר נוכחי</string>
+    <string name="latest_description">עדכונים בזמן אמת לערים ברחבי העולם</string>
 </resources>
