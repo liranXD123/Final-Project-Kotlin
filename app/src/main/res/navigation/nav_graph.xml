@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.finalprojectweatherapp.ui.home.HomeFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/latestWeatherFragment"
+        android:name="com.example.finalprojectweatherapp.ui.latest.LatestWeatherFragment"
+        android:label="@string/latest"
+        tools:layout="@layout/fragment_latest_weather" />
+
+    <fragment
+        android:id="@+id/forecastFragment"
+        android:name="com.example.finalprojectweatherapp.ui.forecast.ForecastFragment"
+        android:label="@string/forecast"
+        tools:layout="@layout/fragment_forecast" />
+
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.finalprojectweatherapp.ui.favorites.FavoritesFragment"
+        android:label="@string/favorites"
+        tools:layout="@layout/fragment_favorites" />
+
+    <fragment
+        android:id="@+id/addFavoriteFragment"
+        android:name="com.example.finalprojectweatherapp.ui.addfavorite.AddFavoriteFragment"
+        android:label="@string/add_favorite"
+        tools:layout="@layout/fragment_add_favorite" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.finalprojectweatherapp.ui.settings.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>

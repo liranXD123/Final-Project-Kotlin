@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">תחזית מזג אוויר</string>
+    <string name="home">בית</string>
+    <string name="forecast">תחזית</string>
+    <string name="latest">עדכונים</string>
+    <string name="favorites">מועדפים</string>
+    <string name="add_favorite">הוסף מועדף</string>
+    <string name="search">חיפוש</string>
+    <string name="settings">הגדרות</string>
+
+    <string name="loading">טוען...</string>
+    <string name="error_unknown">אירעה שגיאה לא ידועה</string>
+    <string name="error_network">בדוק את חיבור האינטרנט שלך</string>
+    <string name="error_city_not_found">עיר לא נמצאה</string>
+
+    <string name="temp_format">%1$d°C</string>
+    <string name="humidity_format">לחות: %1$d%%</string>
+    <string name="feels_like_format">מרגיש כמו: %1$d°C</string>
+    <string name="aqi_format">מדד איכות אוויר: %1$d</string>
+
+    <string name="search_hint">הזן שם עיר</string>
+    <string name="save_to_favorites">שמור במועדפים</string>
+    <string name="delete">מחק</string>
+    <string name="edit">ערוך</string>
+
+    <string name="permission_rationale">נדרשת הרשאת מיקום כדי להציג את מזג האוויר במיקומך הנוכחי.</string>
+    <string name="city_1">עיר 1</string>
+    <string name="city_2">עיר 2</string>
+    <string name="air_pollution_data">נתוני זיהום אוויר</string>
+    <string name="view_pollution_info">צפה בנתוני זיהום</string>
+    <string name="no_favorites_yet">אין מועדפים עדיין</string>
+
+    <string name="sort_alphabetical">סדר אלפביתי</string>
+    <string name="sort_temperature">סדר לפי טמפרטורה</string>
+    <string name="unit_celsius">צלזיוס</string>
+    <string name="unit_fahrenheit">פרנהייט</string>
+    <string name="update_interval">מרווח עדכון</string>
+    <string name="dark_mode">מצב כהה</string>
+</resources>
