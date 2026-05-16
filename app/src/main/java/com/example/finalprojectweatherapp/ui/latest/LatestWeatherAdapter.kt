@@ -25,7 +25,9 @@ class LatestWeatherAdapter : ListAdapter<CurrentWeatherResponse, LatestWeatherAd
             binding.tvLatestCity.text = item.cityName
             binding.tvLatestTemp.text = "${item.main.temperature.toInt()}°C"
             val icon = item.weatherConditions.firstOrNull()?.iconCode
-            Glide.with(itemView).load("https://openweathermap.org/img/wn/$icon.png").into(binding.ivLatestIcon)
+            Glide.with(itemView)
+                .load("https://openweathermap.org/img/wn/${icon}@4x.png")
+                .into(binding.ivLatestIcon)
         }
     }
 

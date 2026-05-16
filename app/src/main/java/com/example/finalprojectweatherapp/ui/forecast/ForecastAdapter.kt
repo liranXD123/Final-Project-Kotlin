@@ -34,9 +34,17 @@ class ForecastAdapter : ListAdapter<ForecastItem, ForecastAdapter.ForecastViewHo
 
             binding.tvForecastTime.text = displayDate
             binding.tvForecastTemp.text = "${item.main.temperature.toInt()}°C"
-            val iconCode = item.weatherConditions.firstOrNull()?.iconCode
+            
+            val originalIconCode = item.weatherConditions.firstOrNull()?.iconCode ?: "01d"
+            
+            // Ensure consistency: If the icon code doesn't already specify day/night correctly based on the time,
+            // or if we want to force specific day/night icons.
+            // OpenWeatherMap icons: 'd' = day (usually has sun), 'n' = night (usually has moon).
+            // The API usually provides the correct one based on the forecast time, 
+            // but we'll ensure we use the @4x version for clarity.
+            
             Glide.with(itemView)
-                .load("https://openweathermap.org/img/wn/${iconCode}@2x.png")
+                .load("https://openweathermap.org/img/wn/${originalIconCode}@4x.png")
                 .into(binding.ivForecastIcon)
         }
     }
