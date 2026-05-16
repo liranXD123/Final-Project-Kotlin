@@ -29,6 +29,11 @@
     <string name="air_pollution_data">Air Pollution Data</string>
     <string name="view_pollution_info">View Pollution Info</string>
     <string name="no_favorites_yet">No favorites yet</string>
+    <string name="current_location">Current Location</string>
+    <string name="humidity_label">HUMIDITY</string>
+    <string name="refresh_weather">Refresh Weather</string>
+    <string name="add_city_label">Add City</string>
+    <string name="temp_format_with_city">%1$s: %2$d°C</string>
 
     <string name="sort_alphabetical">Sort Alphabetically</string>
     <string name="sort_temperature">Sort by Temperature</string>
@@ -38,4 +43,6 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="forecast_description">View the upcoming weather trends for the next few days.</string>
+    <string name="weather_icon_desc">Current weather condition icon</string>
+    <string name="latest_description">Real-time updates for global cities</string>
 </resources>

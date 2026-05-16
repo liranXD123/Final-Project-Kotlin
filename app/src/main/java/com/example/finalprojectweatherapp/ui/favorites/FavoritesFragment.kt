@@ -32,7 +32,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun setupListeners() {
-        binding.fabAddFavorite.setOnClickListener {
+        binding.btnAddFavorite.setOnClickListener {
             findNavController().navigate(R.id.addFavoriteFragment)
         }
 

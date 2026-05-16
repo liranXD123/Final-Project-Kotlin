@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -30,11 +31,9 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        // homeFragment is the only top-level destination that won't show a back arrow.
-        // This ensures that when you navigate to "Right Now" (latestWeatherFragment) 
-        // via the button, an Up button appears in the Toolbar.
+        // All fragments in the bottom nav are top-level destinations
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.homeFragment, R.id.forecastFragment, R.id.favoritesFragment, R.id.settingsFragment)
+            setOf(R.id.homeFragment, R.id.latestWeatherFragment, R.id.forecastFragment, R.id.favoritesFragment, R.id.settingsFragment)
         )
         
         setupActionBarWithNavController(navController, appBarConfiguration)

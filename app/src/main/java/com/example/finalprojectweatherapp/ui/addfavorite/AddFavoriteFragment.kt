@@ -44,15 +44,16 @@ class AddFavoriteFragment : Fragment(R.layout.fragment_add_favorite) {
             when (state) {
                 is Resource.Loading -> {
                     binding.pbSearch.visibility = View.VISIBLE
-                    binding.btnSaveFavorite.visibility = View.GONE
+                    binding.cvResult.visibility = View.GONE
                 }
                 is Resource.Success -> {
                     binding.pbSearch.visibility = View.GONE
-                    binding.tvSearchResult.text = "${state.data?.cityName}: ${state.data?.main?.temperature}°C"
-                    binding.btnSaveFavorite.visibility = View.VISIBLE
+                    binding.cvResult.visibility = View.VISIBLE
+                    binding.tvSearchResult.text = getString(R.string.temp_format_with_city, state.data?.cityName, state.data?.main?.temperature?.toInt())
                 }
                 is Resource.Error -> {
                     binding.pbSearch.visibility = View.GONE
+                    binding.cvResult.visibility = View.GONE
                     Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 }
             }
