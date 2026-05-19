@@ -11,4 +11,20 @@
     <color name="primary">#2196F3</color>
     <color name="primary_variant">#1976D2</color>
     <color name="accent">#FF4081</color>
+
+    <color name="aqi_good">#2E7D32</color>
+    <color name="aqi_good_bg">#E8F5E9</color>
+    <color name="aqi_fair">#689F38</color>
+    <color name="aqi_fair_bg">#F1F8E9</color>
+    <color name="aqi_moderate">#F9A825</color>
+    <color name="aqi_moderate_bg">#FFF8E1</color>
+    <color name="aqi_poor">#EF6C00</color>
+    <color name="aqi_poor_bg">#FFF3E0</color>
+    <color name="aqi_very_poor">#C62828</color>
+    <color name="aqi_very_poor_bg">#FFEBEE</color>
+    <color name="aqi_scale_inactive">#E0E0E0</color>
+
+    <color name="pollutant_low">#43A047</color>
+    <color name="pollutant_medium">#FB8C00</color>
+    <color name="pollutant_high">#E53935</color>
 </resources>

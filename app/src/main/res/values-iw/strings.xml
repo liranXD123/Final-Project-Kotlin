@@ -24,10 +24,12 @@
     <string name="edit">ערוך</string>
 
     <string name="permission_rationale">נדרשת הרשאת מיקום כדי להציג את מזג האוויר במיקומך הנוכחי.</string>
+    <string name="location_unavailable">לא ניתן לקבל את המיקום שלך. נסה שוב או ודא שהמיקום מופעל.</string>
     <string name="city_1">עיר 1</string>
     <string name="city_2">עיר 2</string>
     <string name="air_pollution_data">נתוני זיהום אוויר</string>
     <string name="view_pollution_info">צפה בנתוני זיהום</string>
+    <string name="navigate_up_desc">חזרה</string>
     <string name="no_favorites_yet">אין מועדפים עדיין</string>
     <string name="current_location">מיקום נוכחי</string>
     <string name="humidity_label">לחות</string>
@@ -45,4 +47,42 @@
     <string name="forecast_description">צפייה במגמות מזג האוויר בימים הקרובים</string>
     <string name="weather_icon_desc">אייקון מזג אוויר נוכחי</string>
     <string name="latest_description">עדכונים בזמן אמת לערים ברחבי העולם</string>
+
+    <string name="pollution_subtitle">איכות האוויר ליד המיקום שנבחר</string>
+    <string name="aqi_index_format">רמת AQI %1$d מתוך 5</string>
+    <string name="aqi_icon_desc">אייקון רמת איכות אוויר</string>
+    <string name="aqi_scale_low">נמוך</string>
+    <string name="aqi_scale_high">גבוה</string>
+    <string name="health_advice_title">המלצות בריאות</string>
+    <string name="pollutant_breakdown_title">פירוט מזהמים</string>
+    <string name="pollutant_breakdown_hint">הפסים מציגים ריכוז יחסי (ירוק = נמוך, אדום = גבוה)</string>
+    <string name="pollution_error_title">לא ניתן לטעון נתוני איכות אוויר</string>
+    <string name="pollution_no_components">אין נתוני מזהמים מפורטים למיקום זה.</string>
+    <string name="pollutant_value_format">%1$.1f µg/m³</string>
+    <string name="pollutant_level_low">נמוך</string>
+    <string name="pollutant_level_medium">בינוני</string>
+    <string name="pollutant_level_high">גבוה</string>
+    <string name="pollutant_pm25">PM2.5 (חלקיקים דקים)</string>
+    <string name="pollutant_pm10">PM10 (אבק)</string>
+    <string name="pollutant_no2">NO₂ (חנקן דו-חמצני)</string>
+    <string name="pollutant_o3">O₃ (אוזון)</string>
+    <string name="pollutant_co">CO (פחמן חד-חמצני)</string>
+
+    <string name="aqi_level_good">טוב</string>
+    <string name="aqi_level_fair">סביר</string>
+    <string name="aqi_level_moderate">בינוני</string>
+    <string name="aqi_level_poor">גרוע</string>
+    <string name="aqi_level_very_poor">גרוע מאוד</string>
+
+    <string name="aqi_desc_good">איכות האוויר טובה. הזיהום כמעט ולא מהווה סיכון.</string>
+    <string name="aqi_desc_fair">איכות האוויר מקובלת. אנשים רגישים עשויים להרגיש השפעות קלות.</string>
+    <string name="aqi_desc_moderate">קבוצות רגישות כדאי שיפחיתו מאמץ ממושך בחוץ.</string>
+    <string name="aqi_desc_poor">כולם עלולים להרגיש השפעות בריאותיות.</string>
+    <string name="aqi_desc_very_poor">התראת בריאות — להימנע מפעילות בחוץ אם אפשר.</string>
+
+    <string name="aqi_advice_good">יום מצוין לפעילות בחוץ וספורט.</string>
+    <string name="aqi_advice_fair">בדרך כלל בסדר בחוץ; להעדיף הליכות קצרות אם אתם רגישים.</string>
+    <string name="aqi_advice_moderate">להגביל אימונים ארוכים בחוץ; לסגור חלונות אם יש ערפל.</string>
+    <string name="aqi_advice_poor">לעטות מסכה בחוץ; להעדיף פעילות בפנים.</string>
+    <string name="aqi_advice_very_poor">להישאר בבית כשאפשר ולהשתמש בסינון אוויר אם קיים.</string>
 </resources>

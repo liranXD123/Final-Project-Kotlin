@@ -24,10 +24,12 @@
     <string name="edit">Edit</string>
 
     <string name="permission_rationale">Location permission is required to show weather for your current position.</string>
+    <string name="location_unavailable">Unable to get your location. Try again or check that location is enabled.</string>
     <string name="city_1">City 1</string>
     <string name="city_2">City 2</string>
     <string name="air_pollution_data">Air Pollution Data</string>
     <string name="view_pollution_info">View Pollution Info</string>
+    <string name="navigate_up_desc">Go back</string>
     <string name="no_favorites_yet">No favorites yet</string>
     <string name="current_location">Current Location</string>
     <string name="humidity_label">HUMIDITY</string>
@@ -45,4 +47,42 @@
     <string name="forecast_description">View the upcoming weather trends for the next few days.</string>
     <string name="weather_icon_desc">Current weather condition icon</string>
     <string name="latest_description">Real-time updates for global cities</string>
+
+    <string name="pollution_subtitle">Air quality near your selected location</string>
+    <string name="aqi_index_format">AQI level %1$d of 5</string>
+    <string name="aqi_icon_desc">Air quality level icon</string>
+    <string name="aqi_scale_low">Low</string>
+    <string name="aqi_scale_high">High</string>
+    <string name="health_advice_title">Health advice</string>
+    <string name="pollutant_breakdown_title">Pollutant breakdown</string>
+    <string name="pollutant_breakdown_hint">Bars show relative concentration (green = low, red = high)</string>
+    <string name="pollution_error_title">Could not load air quality</string>
+    <string name="pollution_no_components">No detailed pollutant data available for this location.</string>
+    <string name="pollutant_value_format">%1$.1f µg/m³</string>
+    <string name="pollutant_level_low">Low</string>
+    <string name="pollutant_level_medium">Moderate</string>
+    <string name="pollutant_level_high">High</string>
+    <string name="pollutant_pm25">PM2.5 (fine particles)</string>
+    <string name="pollutant_pm10">PM10 (dust)</string>
+    <string name="pollutant_no2">NO₂ (nitrogen dioxide)</string>
+    <string name="pollutant_o3">O₃ (ozone)</string>
+    <string name="pollutant_co">CO (carbon monoxide)</string>
+
+    <string name="aqi_level_good">Good</string>
+    <string name="aqi_level_fair">Fair</string>
+    <string name="aqi_level_moderate">Moderate</string>
+    <string name="aqi_level_poor">Poor</string>
+    <string name="aqi_level_very_poor">Very poor</string>
+
+    <string name="aqi_desc_good">Air quality is satisfactory. Pollution poses little or no risk.</string>
+    <string name="aqi_desc_fair">Air quality is acceptable. Sensitive people may notice mild effects.</string>
+    <string name="aqi_desc_moderate">Sensitive groups should reduce prolonged outdoor exertion.</string>
+    <string name="aqi_desc_poor">Everyone may begin to experience health effects.</string>
+    <string name="aqi_desc_very_poor">Health alert — avoid outdoor activities if possible.</string>
+
+    <string name="aqi_advice_good">Great day for outdoor activities and exercise.</string>
+    <string name="aqi_advice_fair">Usually fine outdoors; consider shorter walks if you are sensitive.</string>
+    <string name="aqi_advice_moderate">Limit long outdoor workouts; keep windows closed if smoggy.</string>
+    <string name="aqi_advice_poor">Wear a mask if you must go outside; prefer indoor activities.</string>
+    <string name="aqi_advice_very_poor">Stay indoors when possible and use air filtration if available.</string>
 </resources>

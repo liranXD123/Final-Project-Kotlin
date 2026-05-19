@@ -127,6 +127,14 @@
                 android:text="@string/refresh_weather"
                 app:icon="@android:drawable/stat_notify_sync" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewPollution"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/view_pollution_info" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

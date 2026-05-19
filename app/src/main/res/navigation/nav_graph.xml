@@ -9,7 +9,30 @@
         android:id="@+id/homeFragment"
         android:name="com.example.finalprojectweatherapp.ui.home.HomeFragment"
         android:label="@string/home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_pollutionFragment"
+            app:destination="@id/pollutionFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pollutionFragment"
+        android:name="com.example.finalprojectweatherapp.ui.pollution.PollutionFragment"
+        android:label="@string/air_pollution_data"
+        tools:layout="@layout/fragment_pollution">
+        <argument
+            android:name="lat"
+            app:argType="float"
+            android:defaultValue="34.05" />
+        <argument
+            android:name="lon"
+            app:argType="float"
+            android:defaultValue="-118.24" />
+    </fragment>
 
     <fragment
         android:id="@+id/latestWeatherFragment"

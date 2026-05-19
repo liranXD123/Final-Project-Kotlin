@@ -22,16 +22,24 @@ class HomeViewModel @Inject constructor(
     // weatherState is public, but read-only for the Fragment to observe
     val weatherState: LiveData<Resource<CurrentWeatherResponse>> = _weatherState
 
-    // TODO: In a real production app, use BuildConfig to hide this key!
-    private val API_KEY = "8e4f32c877532569510bf17a510975b6"
+    var lastLatitude: Double? = null
+        private set
+    var lastLongitude: Double? = null
+        private set
+
+    fun setLastLocation(lat: Double, lon: Double) {
+        lastLatitude = lat
+        lastLongitude = lon
+    }
 
     fun loadWeatherForLocation(lat: Double, lon: Double) {
+        setLastLocation(lat, lon)
         // 1. Tell the UI we are loading (so it can show a progress bar)
         _weatherState.value = Resource.Loading()
 
         // 2. Launch a Coroutine to fetch data off the main thread
         viewModelScope.launch {
-            val result = repository.fetchCurrentWeather(lat, lon, API_KEY)
+            val result = repository.fetchCurrentWeather(lat, lon, com.example.finalprojectweatherapp.utils.Constants.API_KEY)
 
             // 3. Post the success or error result back to the UI
             _weatherState.value = result
