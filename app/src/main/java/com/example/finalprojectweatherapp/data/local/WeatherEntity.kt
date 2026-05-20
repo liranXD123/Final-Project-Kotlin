@@ -9,5 +9,5 @@ data class WeatherEntity(
     val cityName: String, // Using city name as the unique key prevents duplicates
     val temperature: Double,
     val description: String,
-    val iconUrl: String // Required to load the weather icon using Glide
+    val iconUrl: String // OpenWeather icon image URL for Glide
 )

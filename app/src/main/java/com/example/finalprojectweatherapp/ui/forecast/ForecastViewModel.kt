@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finalprojectweatherapp.data.remote.models.ForecastResponse
+import com.example.finalprojectweatherapp.data.local.toForecastItem
+import com.example.finalprojectweatherapp.data.remote.models.ForecastItem
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
 import com.example.finalprojectweatherapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,13 +20,41 @@ class ForecastViewModel @Inject constructor(
     private val repository: WeatherRepository
 ) : ViewModel() {
 
-    private val _forecastState = MutableLiveData<Resource<ForecastResponse>>()
-    val forecastState: LiveData<Resource<ForecastResponse>> = _forecastState
+    private val _forecastState = MutableLiveData<Resource<List<ForecastItem>>>()
+    val forecastState: LiveData<Resource<List<ForecastItem>>> = _forecastState
 
-    fun getForecast(lat: Double, lon: Double) {
-        _forecastState.value = Resource.Loading()
+    private var observeJob: Job? = null
+
+    /**
+     * Observes forecast rows from Room and refreshes from the API.
+     * UI updates automatically when the database changes.
+     */
+    fun loadForecast(lat: Double, lon: Double) {
+        observeJob?.cancel()
+        observeJob = viewModelScope.launch {
+            repository.observeForecast(lat, lon).collectLatest { entities ->
+                if (entities.isNotEmpty()) {
+                    _forecastState.value = Resource.Success(entities.map { it.toForecastItem() })
+                }
+            }
+        }
+
         viewModelScope.launch {
-            _forecastState.value = repository.fetchForecast(lat, lon, Constants.API_KEY)
+            val hasCache = repository.getCachedForecast(lat, lon).isNotEmpty()
+            if (!hasCache) {
+                _forecastState.value = Resource.Loading()
+            }
+
+            when (val refreshResult = repository.refreshForecast(lat, lon, Constants.API_KEY)) {
+                is Resource.Error -> {
+                    if (_forecastState.value !is Resource.Success) {
+                        _forecastState.value = Resource.Error(
+                            refreshResult.message ?: "Network error. Check connection."
+                        )
+                    }
+                }
+                else -> Unit
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,4 +26,24 @@ interface WeatherDao {
     // Helper method to check if a heart icon should be filled or empty in the UI
     @Query("SELECT EXISTS(SELECT 1 FROM favorites_table WHERE cityName = :cityName)")
     suspend fun isFavorite(cityName: String): Boolean
+
+    // --- FORECAST CACHE (API → Room → UI) ---
+
+    @Query("SELECT * FROM forecast_cache WHERE locationKey = :locationKey ORDER BY dateTime ASC")
+    fun observeForecast(locationKey: String): Flow<List<ForecastEntity>>
+
+    @Query("SELECT * FROM forecast_cache WHERE locationKey = :locationKey ORDER BY dateTime ASC")
+    suspend fun getForecastSnapshot(locationKey: String): List<ForecastEntity>
+
+    @Query("DELETE FROM forecast_cache WHERE locationKey = :locationKey")
+    suspend fun clearForecastForLocation(locationKey: String)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertForecastItems(items: List<ForecastEntity>)
+
+    @Transaction
+    suspend fun replaceForecastForLocation(locationKey: String, items: List<ForecastEntity>) {
+        clearForecastForLocation(locationKey)
+        insertForecastItems(items)
+    }
 }

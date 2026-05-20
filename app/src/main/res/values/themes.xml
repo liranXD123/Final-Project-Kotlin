@@ -8,6 +8,7 @@
         <item name="android:statusBarColor">@color/primary_variant</item>
         <item name="colorSurface">@color/white</item>
         <item name="colorOnSurface">@color/black</item>
+        <item name="colorSurfaceVariant">@color/weather_card_list</item>
     </style>
 
     <style name="Theme.FinalProjectWeatherApp" parent="Base.Theme.FinalProjectWeatherApp" />

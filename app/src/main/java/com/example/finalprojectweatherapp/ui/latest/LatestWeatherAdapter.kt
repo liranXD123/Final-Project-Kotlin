@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse
+import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import com.example.finalprojectweatherapp.databinding.ItemLatestWeatherBinding
 
 class LatestWeatherAdapter : ListAdapter<CurrentWeatherResponse, LatestWeatherAdapter.LatestViewHolder>(DiffCallback()) {
@@ -24,10 +24,10 @@ class LatestWeatherAdapter : ListAdapter<CurrentWeatherResponse, LatestWeatherAd
         fun bind(item: CurrentWeatherResponse) {
             binding.tvLatestCity.text = item.cityName
             binding.tvLatestTemp.text = "${item.main.temperature.toInt()}°C"
-            val icon = item.weatherConditions.firstOrNull()?.iconCode
-            Glide.with(itemView)
-                .load("https://openweathermap.org/img/wn/${icon}@4x.png")
-                .into(binding.ivLatestIcon)
+            WeatherIconLoader.load(
+                binding.ivLatestIcon,
+                item.weatherConditions.firstOrNull()?.iconCode
+            )
         }
     }
 

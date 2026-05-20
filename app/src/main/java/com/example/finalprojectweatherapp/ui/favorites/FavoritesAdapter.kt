@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.finalprojectweatherapp.data.local.WeatherEntity
+import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import com.example.finalprojectweatherapp.databinding.ItemFavoriteBinding
 
 class FavoritesAdapter(
@@ -40,10 +40,7 @@ class FavoritesAdapter(
             binding.tvSavedTemperature.text = "${weather.temperature.toInt()}°C"
             binding.tvSavedDescription.text = weather.description.capitalize()
 
-            // Fulfilling the Glide implementation requirement
-            Glide.with(itemView)
-                .load(weather.iconUrl)
-                .into(binding.ivSavedWeatherIcon)
+            WeatherIconLoader.loadFromStored(binding.ivSavedWeatherIcon, weather.iconUrl)
         }
     }
 

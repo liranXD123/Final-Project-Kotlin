@@ -8,6 +8,7 @@ import com.example.finalprojectweatherapp.data.local.WeatherEntity
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
 import com.example.finalprojectweatherapp.utils.Resource
+import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.first
@@ -29,7 +30,9 @@ class WeatherWorker @AssistedInject constructor(
                         cityName = result.data.cityName,
                         temperature = result.data.main.temperature,
                         description = result.data.weatherConditions.firstOrNull()?.description ?: "",
-                        iconUrl = "https://openweathermap.org/img/wn/${result.data.weatherConditions.firstOrNull()?.iconCode}@2x.png"
+                        iconUrl = WeatherIconLoader.iconUrl(
+                            result.data.weatherConditions.firstOrNull()?.iconCode
+                        )
                     )
                     repository.addToFavorites(updatedEntity)
                 }

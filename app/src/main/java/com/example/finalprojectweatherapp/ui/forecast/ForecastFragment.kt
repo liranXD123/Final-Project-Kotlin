@@ -27,7 +27,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         observeViewModel()
 
         // For demo purposes, fetching for a default location if no args
-        viewModel.getForecast(34.05, -118.24) // Los Angeles
+        viewModel.loadForecast(34.05, -118.24) // Los Angeles
     }
 
     private fun setupRecyclerView() {
@@ -46,7 +46,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
                 }
                 is Resource.Success -> {
                     binding.progressBarForecast.visibility = View.GONE
-                    forecastAdapter.submitList(state.data?.forecastList)
+                    forecastAdapter.submitList(state.data)
                 }
                 is Resource.Error -> {
                     binding.progressBarForecast.visibility = View.GONE

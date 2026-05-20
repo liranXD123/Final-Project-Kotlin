@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="weather_card_home">#2D4A63</color>
+    <color name="weather_card_list">#3D6B8C</color>
+    <color name="weather_card_text_dark">#E8F4FC</color>
+    <color name="weather_card_text_light">#FFFFFF</color>
+</resources>

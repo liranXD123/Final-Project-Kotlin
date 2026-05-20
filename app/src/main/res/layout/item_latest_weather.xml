@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/weather_card_list"
     app:cardCornerRadius="24dp"
     app:cardElevation="2dp"
     app:strokeWidth="0dp">
@@ -20,6 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="22sp"
+            android:textColor="@color/weather_card_text_light"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivLatestIcon"
@@ -32,11 +34,12 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:contentDescription="@string/latest"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvLatestTemp"
             app:layout_constraintStart_toEndOf="@+id/tvLatestCity"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@drawable/ic_weather_placeholder" />
 
         <TextView
             android:id="@+id/tvLatestTemp"
@@ -44,7 +47,7 @@
             android:layout_height="wrap_content"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/weather_card_text_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

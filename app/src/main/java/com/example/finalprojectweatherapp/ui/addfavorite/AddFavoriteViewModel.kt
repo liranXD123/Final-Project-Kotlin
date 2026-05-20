@@ -9,6 +9,7 @@ import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherRespo
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
 import com.example.finalprojectweatherapp.utils.Resource
+import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,7 +35,7 @@ class AddFavoriteViewModel @Inject constructor(
                 cityName = data.cityName,
                 temperature = data.main.temperature,
                 description = data.weatherConditions.firstOrNull()?.description ?: "",
-                iconUrl = "https://openweathermap.org/img/wn/${data.weatherConditions.firstOrNull()?.iconCode}@2x.png"
+                iconUrl = WeatherIconLoader.iconUrl(data.weatherConditions.firstOrNull()?.iconCode)
             )
             repository.addToFavorites(entity)
         }

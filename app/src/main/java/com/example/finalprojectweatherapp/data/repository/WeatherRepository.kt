@@ -1,7 +1,10 @@
 package com.example.finalprojectweatherapp.data.repository
 
+import com.example.finalprojectweatherapp.data.local.ForecastEntity
 import com.example.finalprojectweatherapp.data.local.WeatherDao
 import com.example.finalprojectweatherapp.data.local.WeatherEntity
+import com.example.finalprojectweatherapp.data.local.forecastLocationKey
+import com.example.finalprojectweatherapp.data.local.toForecastEntity
 import com.example.finalprojectweatherapp.data.remote.WeatherApi
 import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse
 import com.example.finalprojectweatherapp.data.remote.models.ForecastResponse
@@ -25,6 +28,38 @@ class WeatherRepository @Inject constructor(
     suspend fun removeFromFavorites(entity: WeatherEntity) = weatherDao.deleteFavorite(entity)
 
     suspend fun isFavorite(cityName: String): Boolean = weatherDao.isFavorite(cityName)
+
+    // --- FORECAST CACHE (observe Room, refresh from API) ---
+
+    fun observeForecast(lat: Double, lon: Double): Flow<List<ForecastEntity>> {
+        val locationKey = forecastLocationKey(lat, lon)
+        return weatherDao.observeForecast(locationKey)
+    }
+
+    suspend fun getCachedForecast(lat: Double, lon: Double): List<ForecastEntity> {
+        return weatherDao.getForecastSnapshot(forecastLocationKey(lat, lon))
+    }
+
+    /**
+     * Fetches forecast from Retrofit, saves to Room, and returns any network error.
+     * UI should observe [observeForecast] for displayed data.
+     */
+    suspend fun refreshForecast(lat: Double, lon: Double, apiKey: String): Resource<Unit> {
+        val locationKey = forecastLocationKey(lat, lon)
+        return when (val result = fetchForecast(lat, lon, apiKey)) {
+            is Resource.Success -> {
+                val items = result.data?.forecastList?.map { it.toForecastEntity(locationKey) } ?: emptyList()
+                if (items.isEmpty()) {
+                    Resource.Error("Empty forecast data")
+                } else {
+                    weatherDao.replaceForecastForLocation(locationKey, items)
+                    Resource.Success(Unit)
+                }
+            }
+            is Resource.Error -> Resource.Error(result.message ?: "Forecast error")
+            is Resource.Loading -> Resource.Error("Unexpected loading state")
+        }
+    }
 
     // --- REMOTE NETWORK OPERATIONS ---
 
