@@ -39,6 +39,11 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     }
 
     private fun observeViewModel() {
+        viewModel.isCelsius.observe(viewLifecycleOwner) { isCelsius ->
+            forecastAdapter.isCelsius = isCelsius
+            forecastAdapter.notifyDataSetChanged()
+        }
+
         viewModel.forecastState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is Resource.Loading -> {

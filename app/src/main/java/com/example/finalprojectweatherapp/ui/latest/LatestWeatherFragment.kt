@@ -38,6 +38,11 @@ class LatestWeatherFragment : Fragment(R.layout.fragment_latest_weather) {
     }
 
     private fun observeViewModel() {
+        viewModel.isCelsius.observe(viewLifecycleOwner) { isCelsius ->
+            latestAdapter.isCelsius = isCelsius
+            latestAdapter.notifyDataSetChanged()
+        }
+
         viewModel.latestWeather.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is Resource.Loading -> {

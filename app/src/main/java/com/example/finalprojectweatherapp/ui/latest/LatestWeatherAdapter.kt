@@ -6,10 +6,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse
+import com.example.finalprojectweatherapp.utils.TemperatureUtils
 import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import com.example.finalprojectweatherapp.databinding.ItemLatestWeatherBinding
 
 class LatestWeatherAdapter : ListAdapter<CurrentWeatherResponse, LatestWeatherAdapter.LatestViewHolder>(DiffCallback()) {
+
+    var isCelsius: Boolean = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LatestViewHolder {
         val binding = ItemLatestWeatherBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -17,13 +20,13 @@ class LatestWeatherAdapter : ListAdapter<CurrentWeatherResponse, LatestWeatherAd
     }
 
     override fun onBindViewHolder(holder: LatestViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), isCelsius)
     }
 
     class LatestViewHolder(private val binding: ItemLatestWeatherBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: CurrentWeatherResponse) {
+        fun bind(item: CurrentWeatherResponse, isCelsius: Boolean) {
             binding.tvLatestCity.text = item.cityName
-            binding.tvLatestTemp.text = "${item.main.temperature.toInt()}°C"
+            binding.tvLatestTemp.text = TemperatureUtils.format(item.main.temperature, isCelsius)
             WeatherIconLoader.load(
                 binding.ivLatestIcon,
                 item.weatherConditions.firstOrNull()?.iconCode

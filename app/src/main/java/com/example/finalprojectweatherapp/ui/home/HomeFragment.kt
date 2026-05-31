@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.finalprojectweatherapp.R
+import com.example.finalprojectweatherapp.utils.TemperatureUtils
 import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import com.example.finalprojectweatherapp.databinding.FragmentHomeBinding
 import com.example.finalprojectweatherapp.utils.Resource
@@ -157,20 +158,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun observeViewModel() {
+        viewModel.isCelsius.observe(viewLifecycleOwner) {
+            // Re-render the weather if it's already there
+            viewModel.weatherState.value?.let { state ->
+                if (state is Resource.Success) {
+                    updateWeatherUI(state.data!!)
+                }
+            }
+        }
+
         viewModel.weatherState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is Resource.Loading -> setRefreshInProgress(true)
                 is Resource.Success -> {
                     setRefreshInProgress(false)
                     state.data?.let { data ->
-                        binding.tvCityName.text = data.cityName
-                        binding.tvTemperature.text = getString(R.string.temp_format, data.main.temperature.toInt())
-                        binding.tvHumidity.text = getString(R.string.humidity_format, data.main.humidity)
-
-                        WeatherIconLoader.load(
-                            binding.ivWeatherIcon,
-                            data.weatherConditions.firstOrNull()?.iconCode
-                        )
+                        updateWeatherUI(data)
                     }
                 }
                 is Resource.Error -> {
@@ -179,6 +182,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
+    }
+
+    private fun updateWeatherUI(data: com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse) {
+        val isCelsius = viewModel.isCelsius.value ?: true
+        binding.tvCityName.text = data.cityName
+        binding.tvTemperature.text = TemperatureUtils.format(data.main.temperature, isCelsius)
+        binding.tvHumidity.text = getString(R.string.humidity_format, data.main.humidity)
+
+        WeatherIconLoader.load(
+            binding.ivWeatherIcon,
+            data.weatherConditions.firstOrNull()?.iconCode
+        )
     }
 
     override fun onDestroyView() {

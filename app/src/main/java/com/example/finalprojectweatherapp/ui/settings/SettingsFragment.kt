@@ -21,6 +21,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         _binding = FragmentSettingsBinding.bind(view)
 
         setupListeners()
+        observeViewModel()
     }
 
     private fun setupListeners() {
@@ -29,6 +30,20 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+
+        binding.rgUnits.setOnCheckedChangeListener { _, checkedId ->
+            viewModel.setUnit(checkedId == R.id.rbCelsius)
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.isCelsius.observe(viewLifecycleOwner) { isCelsius ->
+            if (isCelsius) {
+                binding.rbCelsius.isChecked = true
+            } else {
+                binding.rbFahrenheit.isChecked = true
             }
         }
     }

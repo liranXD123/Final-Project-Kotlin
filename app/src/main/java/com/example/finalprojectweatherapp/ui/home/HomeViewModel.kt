@@ -1,5 +1,6 @@
 package com.example.finalprojectweatherapp.ui.home
 
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherRespo
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
 import com.example.finalprojectweatherapp.utils.Resource
+import com.example.finalprojectweatherapp.utils.SettingsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -15,11 +17,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepository,
+    private val settingsManager: SettingsManager
 ) : ViewModel() {
 
     private val _weatherState = MutableLiveData<Resource<CurrentWeatherResponse>>()
     val weatherState: LiveData<Resource<CurrentWeatherResponse>> = _weatherState
+
+    val isCelsius = settingsManager.isCelsius.asLiveData()
 
     var lastLatitude: Double? = null
         private set

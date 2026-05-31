@@ -1,5 +1,6 @@
 package com.example.finalprojectweatherapp.ui.addfavorite
 
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherRespo
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
 import com.example.finalprojectweatherapp.utils.Resource
+import com.example.finalprojectweatherapp.utils.SettingsManager
 import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,11 +18,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddFavoriteViewModel @Inject constructor(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepository,
+    private val settingsManager: SettingsManager
 ) : ViewModel() {
 
     private val _searchResult = MutableLiveData<Resource<CurrentWeatherResponse>>()
     val searchResult: LiveData<Resource<CurrentWeatherResponse>> = _searchResult
+
+    val isCelsius = settingsManager.isCelsius.asLiveData()
 
     fun searchCity(cityName: String) {
         _searchResult.value = Resource.Loading()

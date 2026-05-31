@@ -1,11 +1,13 @@
 package com.example.finalprojectweatherapp.ui.favorites
 
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finalprojectweatherapp.data.local.WeatherEntity
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
+import com.example.finalprojectweatherapp.utils.SettingsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -13,11 +15,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepository,
+    private val settingsManager: SettingsManager
 ) : ViewModel() {
 
     private val _favorites = MutableLiveData<List<WeatherEntity>>()
     val favorites: LiveData<List<WeatherEntity>> = _favorites
+
+    val isCelsius = settingsManager.isCelsius.asLiveData()
 
     private var allFavorites = listOf<WeatherEntity>()
     private var currentSortType = SortType.ALPHABETICAL

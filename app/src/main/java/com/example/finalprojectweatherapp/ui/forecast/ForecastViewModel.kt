@@ -1,5 +1,6 @@
 package com.example.finalprojectweatherapp.ui.forecast
 
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.example.finalprojectweatherapp.data.remote.models.ForecastItem
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
 import com.example.finalprojectweatherapp.utils.Resource
+import com.example.finalprojectweatherapp.utils.SettingsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -17,11 +19,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForecastViewModel @Inject constructor(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepository,
+    private val settingsManager: SettingsManager
 ) : ViewModel() {
 
     private val _forecastState = MutableLiveData<Resource<List<ForecastItem>>>()
     val forecastState: LiveData<Resource<List<ForecastItem>>> = _forecastState
+
+    val isCelsius = settingsManager.isCelsius.asLiveData()
 
     private var observeJob: Job? = null
 

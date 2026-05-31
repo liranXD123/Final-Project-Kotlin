@@ -84,6 +84,11 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun observeViewModel() {
+        viewModel.isCelsius.observe(viewLifecycleOwner) { isCelsius ->
+            favoritesAdapter.isCelsius = isCelsius
+            favoritesAdapter.notifyDataSetChanged()
+        }
+
         viewModel.favorites.observe(viewLifecycleOwner) { list ->
             android.util.Log.d("FavoritesFragment", "Favorites updated: ${list.size} items")
             favoritesAdapter.submitList(list)

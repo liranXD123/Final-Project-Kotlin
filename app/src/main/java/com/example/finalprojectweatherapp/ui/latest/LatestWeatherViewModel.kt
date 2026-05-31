@@ -1,5 +1,6 @@
 package com.example.finalprojectweatherapp.ui.latest
 
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherRespo
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
 import com.example.finalprojectweatherapp.utils.Resource
+import com.example.finalprojectweatherapp.utils.SettingsManager
 import com.example.finalprojectweatherapp.worker.WeatherWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -22,11 +24,14 @@ import javax.inject.Inject
 @HiltViewModel
 class LatestWeatherViewModel @Inject constructor(
     private val repository: WeatherRepository,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val settingsManager: SettingsManager
 ) : ViewModel() {
 
     private val _latestWeather = MutableLiveData<Resource<List<CurrentWeatherResponse>>>()
     val latestWeather: LiveData<Resource<List<CurrentWeatherResponse>>> = _latestWeather
+
+    val isCelsius = settingsManager.isCelsius.asLiveData()
 
     private val cities = listOf("London", "New York", "Tokyo", "Paris", "Berlin")
     private var updateInterval = 60000L // Default 1 minute

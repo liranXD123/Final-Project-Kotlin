@@ -1,25 +1,19 @@
 package com.example.finalprojectweatherapp.ui.settings
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.ViewModel
+import com.example.finalprojectweatherapp.utils.SettingsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor() : ViewModel() {
+class SettingsViewModel @Inject constructor(
+    private val settingsManager: SettingsManager
+) : ViewModel() {
 
-    private val _isCelsius = MutableLiveData<Boolean>(true)
-    val isCelsius: LiveData<Boolean> = _isCelsius
-
-    private val _isDarkMode = MutableLiveData<Boolean>(false)
-    val isDarkMode: LiveData<Boolean> = _isDarkMode
+    val isCelsius = settingsManager.isCelsius.asLiveData()
 
     fun setUnit(celsius: Boolean) {
-        _isCelsius.value = celsius
-    }
-
-    fun setDarkMode(enabled: Boolean) {
-        _isDarkMode.value = enabled
+        settingsManager.setCelsius(celsius)
     }
 }

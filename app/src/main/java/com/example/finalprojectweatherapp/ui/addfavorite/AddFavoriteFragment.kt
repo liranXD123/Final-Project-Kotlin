@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import com.example.finalprojectweatherapp.R
 import com.example.finalprojectweatherapp.databinding.FragmentAddFavoriteBinding
 import com.example.finalprojectweatherapp.utils.Resource
+import com.example.finalprojectweatherapp.utils.TemperatureUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,6 +41,14 @@ class AddFavoriteFragment : Fragment(R.layout.fragment_add_favorite) {
     }
 
     private fun observeViewModel() {
+        viewModel.isCelsius.observe(viewLifecycleOwner) {
+            viewModel.searchResult.value?.let { state ->
+                if (state is Resource.Success) {
+                    updateSearchUI(state.data!!)
+                }
+            }
+        }
+
         viewModel.searchResult.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is Resource.Loading -> {
@@ -49,7 +58,7 @@ class AddFavoriteFragment : Fragment(R.layout.fragment_add_favorite) {
                 is Resource.Success -> {
                     binding.pbSearch.visibility = View.GONE
                     binding.cvResult.visibility = View.VISIBLE
-                    binding.tvSearchResult.text = getString(R.string.temp_format_with_city, state.data?.cityName, state.data?.main?.temperature?.toInt())
+                    updateSearchUI(state.data!!)
                 }
                 is Resource.Error -> {
                     binding.pbSearch.visibility = View.GONE
@@ -58,6 +67,12 @@ class AddFavoriteFragment : Fragment(R.layout.fragment_add_favorite) {
                 }
             }
         }
+    }
+
+    private fun updateSearchUI(data: com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse) {
+        val isCelsius = viewModel.isCelsius.value ?: true
+        val tempFormatted = TemperatureUtils.format(data.main.temperature, isCelsius)
+        binding.tvSearchResult.text = "${data.cityName}: $tempFormatted"
     }
 
     override fun onDestroyView() {
