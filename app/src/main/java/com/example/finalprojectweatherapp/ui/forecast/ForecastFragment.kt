@@ -45,6 +45,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         }
 
         viewModel.forecastState.observe(viewLifecycleOwner) { state ->
+            if (_binding == null) return@observe
             when (state) {
                 is Resource.Loading -> {
                     binding.progressBarForecast.visibility = View.VISIBLE

@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finalprojectweatherapp.data.local.WeatherEntity
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
+import com.example.finalprojectweatherapp.utils.Constants
+import com.example.finalprojectweatherapp.utils.LanguageUtils
+import com.example.finalprojectweatherapp.utils.Resource
 import com.example.finalprojectweatherapp.utils.SettingsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -41,6 +44,42 @@ class FavoritesViewModel @Inject constructor(
             repository.getFavoritesFlow().collectLatest { databaseList ->
                 allFavorites = databaseList
                 updateList()
+                
+                // Detection logic: Compare current system state with PERSISTED state
+                val currentLang = LanguageUtils.getSystemLanguage()
+                val currentCelsius = settingsManager.isCelsius()
+                
+                val lastLang = settingsManager.getLastUsedLanguage()
+                val lastUnit = settingsManager.getLastUsedUnit()
+                
+                // If it's the first run or settings changed, we trigger a refresh
+                if (databaseList.isNotEmpty() && (currentLang != lastLang || currentCelsius != lastUnit)) {
+                    // Update persisted state immediately to avoid repeated calls
+                    settingsManager.setLastUsedLanguage(currentLang)
+                    settingsManager.setLastUsedUnit(currentCelsius)
+
+                    refreshFavoritesNetwork(databaseList)
+                }
+            }
+        }
+    }
+
+    private fun refreshFavoritesNetwork(list: List<WeatherEntity>) {
+        viewModelScope.launch {
+            list.forEach { entity ->
+                // Use city ID for reliable fetching across different languages
+                val result = repository.fetchWeatherById(entity.id, Constants.API_KEY)
+                if (result is Resource.Success && result.data != null) {
+                    val weather = result.data
+                    val updated = WeatherEntity(
+                        id = weather.id,
+                        cityName = weather.cityName, // This will now be the translated name
+                        temperature = weather.main.temperature,
+                        description = weather.weatherConditions.firstOrNull()?.description ?: "",
+                        iconUrl = weather.weatherConditions.firstOrNull()?.iconCode ?: ""
+                    )
+                    repository.addToFavorites(updated)
+                }
             }
         }
     }

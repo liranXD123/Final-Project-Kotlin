@@ -36,6 +36,8 @@
     <string name="refresh_weather">Refresh Weather</string>
     <string name="add_city_label">Add City</string>
     <string name="temp_format_with_city">%1$s: %2$d°C</string>
+    <string name="deleted">deleted</string>
+    <string name="undo">Undo</string>
 
     <string name="sort_alphabetical">Sort Alphabetically</string>
     <string name="sort_temperature">Sort by Temperature</string>

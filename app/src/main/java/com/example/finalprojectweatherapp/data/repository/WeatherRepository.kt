@@ -9,6 +9,7 @@ import com.example.finalprojectweatherapp.data.remote.WeatherApi
 import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse
 import com.example.finalprojectweatherapp.data.remote.models.ForecastResponse
 import com.example.finalprojectweatherapp.data.remote.models.PollutionResponse
+import com.example.finalprojectweatherapp.utils.LanguageUtils
 import com.example.finalprojectweatherapp.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class WeatherRepository @Inject constructor(
 
     suspend fun removeFromFavorites(entity: WeatherEntity) = weatherDao.deleteFavorite(entity)
 
-    suspend fun isFavorite(cityName: String): Boolean = weatherDao.isFavorite(cityName)
+    suspend fun isFavoriteById(cityId: Int): Boolean = weatherDao.isFavoriteById(cityId)
 
     // --- FORECAST CACHE (observe Room, refresh from API) ---
 
@@ -65,7 +66,7 @@ class WeatherRepository @Inject constructor(
 
     suspend fun fetchCurrentWeather(lat: Double, lon: Double, apiKey: String): Resource<CurrentWeatherResponse> {
         return try {
-            val response = weatherApi.getCurrentWeather(lat, lon, apiKey)
+            val response = weatherApi.getCurrentWeather(lat, lon, apiKey, "metric", LanguageUtils.getSystemLanguage())
             if (response.isSuccessful) {
                 response.body()?.let { resultResponse ->
                     return@let Resource.Success(resultResponse)
@@ -80,7 +81,7 @@ class WeatherRepository @Inject constructor(
 
     suspend fun fetchForecast(lat: Double, lon: Double, apiKey: String): Resource<ForecastResponse> {
         return try {
-            val response = weatherApi.getForecast(lat, lon, apiKey)
+            val response = weatherApi.getForecast(lat, lon, apiKey, "metric", LanguageUtils.getSystemLanguage())
             if (response.isSuccessful) {
                 response.body()?.let { return@let Resource.Success(it) } ?: Resource.Error("Empty forecast data")
             } else {
@@ -106,7 +107,20 @@ class WeatherRepository @Inject constructor(
 
     suspend fun fetchWeatherByCity(cityName: String, apiKey: String): Resource<CurrentWeatherResponse> {
         return try {
-            val response = weatherApi.getWeatherByCity(cityName, apiKey)
+            val response = weatherApi.getWeatherByCity(cityName, apiKey, "metric", LanguageUtils.getSystemLanguage())
+            if (response.isSuccessful) {
+                response.body()?.let { return@let Resource.Success(it) } ?: Resource.Error("Empty data")
+            } else {
+                Resource.Error("City not found")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Network error. Check connection.")
+        }
+    }
+
+    suspend fun fetchWeatherById(cityId: Int, apiKey: String): Resource<CurrentWeatherResponse> {
+        return try {
+            val response = weatherApi.getWeatherById(cityId, apiKey, "metric", LanguageUtils.getSystemLanguage())
             if (response.isSuccessful) {
                 response.body()?.let { return@let Resource.Success(it) } ?: Resource.Error("Empty data")
             } else {

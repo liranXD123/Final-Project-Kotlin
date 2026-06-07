@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 // This matches the JSON structure from OpenWeatherMap
 data class CurrentWeatherResponse(
+    @SerializedName("id") val id: Int,
     @SerializedName("name") val cityName: String,
     @SerializedName("main") val main: MainStats,
     @SerializedName("weather") val weatherConditions: List<WeatherCondition>

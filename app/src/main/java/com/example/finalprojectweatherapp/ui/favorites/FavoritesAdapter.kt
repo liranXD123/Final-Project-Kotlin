@@ -50,7 +50,7 @@ class FavoritesAdapter(
     // This makes sure the RecyclerView only animates items that actually changed
     class FavoritesDiffCallback : DiffUtil.ItemCallback<WeatherEntity>() {
         override fun areItemsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
-            return oldItem.cityName == newItem.cityName
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {

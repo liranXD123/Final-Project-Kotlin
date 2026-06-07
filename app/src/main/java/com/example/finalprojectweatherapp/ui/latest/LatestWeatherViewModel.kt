@@ -12,6 +12,7 @@ import androidx.work.WorkManager
 import com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse
 import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
+import com.example.finalprojectweatherapp.utils.LanguageUtils
 import com.example.finalprojectweatherapp.utils.Resource
 import com.example.finalprojectweatherapp.utils.SettingsManager
 import com.example.finalprojectweatherapp.worker.WeatherWorker
@@ -33,7 +34,18 @@ class LatestWeatherViewModel @Inject constructor(
 
     val isCelsius = settingsManager.isCelsius.asLiveData()
 
-    private val cities = listOf("London", "New York", "Tokyo", "Paris", "Berlin")
+    /**
+     * Returns a localized list of cities based on system language.
+     * Tokyo will now be "טוקיו" in Hebrew and "Tokyo" in English.
+     */
+    private fun getLocalizedCities(): List<String> {
+        return if (LanguageUtils.getSystemLanguage() == "he") {
+            listOf("לונדון", "ניו יורק", "טוקיו", "פריז", "ברלין")
+        } else {
+            listOf("London", "New York", "Tokyo", "Paris", "Berlin")
+        }
+    }
+
     private var updateInterval = 60000L // Default 1 minute
 
     fun startUpdates(intervalMinutes: Long) {
@@ -60,6 +72,7 @@ class LatestWeatherViewModel @Inject constructor(
                 val results = mutableListOf<CurrentWeatherResponse>()
                 var hasError = false
                 
+                val cities = getLocalizedCities()
                 for (city in cities) {
                     val result = repository.fetchWeatherByCity(city, Constants.API_KEY)
                     if (result is Resource.Success && result.data != null) {

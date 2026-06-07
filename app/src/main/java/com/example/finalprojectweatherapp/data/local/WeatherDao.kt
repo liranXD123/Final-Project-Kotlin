@@ -24,8 +24,8 @@ interface WeatherDao {
     suspend fun deleteFavorite(weather: WeatherEntity)
 
     // Helper method to check if a heart icon should be filled or empty in the UI
-    @Query("SELECT EXISTS(SELECT 1 FROM favorites_table WHERE cityName = :cityName)")
-    suspend fun isFavorite(cityName: String): Boolean
+    @Query("SELECT EXISTS(SELECT 1 FROM favorites_table WHERE id = :cityId)")
+    suspend fun isFavoriteById(cityId: Int): Boolean
 
     // --- FORECAST CACHE (API → Room → UI) ---
 

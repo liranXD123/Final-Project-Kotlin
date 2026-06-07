@@ -36,6 +36,8 @@
     <string name="refresh_weather">רענן מזג אוויר</string>
     <string name="add_city_label">הוסף עיר</string>
     <string name="temp_format_with_city">%1$s: %2$d°C</string>
+    <string name="deleted">נמחק</string>
+    <string name="undo">ביטול</string>
 
     <string name="sort_alphabetical">סדר אלפביתי</string>
     <string name="sort_temperature">סדר לפי טמפרטורה</string>

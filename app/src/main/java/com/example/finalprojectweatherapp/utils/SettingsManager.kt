@@ -24,7 +24,15 @@ class SettingsManager @Inject constructor(
 
     fun isCelsius(): Boolean = _isCelsius.value
 
+    fun getLastUsedLanguage(): String = prefs.getString(KEY_LAST_LANG, "") ?: ""
+    fun setLastUsedLanguage(lang: String) = prefs.edit().putString(KEY_LAST_LANG, lang).apply()
+
+    fun getLastUsedUnit(): Boolean = prefs.getBoolean(KEY_LAST_UNIT, true)
+    fun setLastUsedUnit(isCelsius: Boolean) = prefs.edit().putBoolean(KEY_LAST_UNIT, isCelsius).apply()
+
     companion object {
         private const val KEY_IS_CELSIUS = "key_is_celsius"
+        private const val KEY_LAST_LANG = "key_last_lang"
+        private const val KEY_LAST_UNIT = "key_last_unit"
     }
 }

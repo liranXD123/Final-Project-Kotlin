@@ -6,8 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "favorites_table")
 data class WeatherEntity(
     @PrimaryKey(autoGenerate = false)
-    val cityName: String, // Using city name as the unique key prevents duplicates
+    val id: Int, // OpenWeatherMap City ID - unique and same across all languages
+    val cityName: String,
     val temperature: Double,
     val description: String,
-    val iconUrl: String // OpenWeather icon image URL for Glide
+    val iconUrl: String // icon code
 )

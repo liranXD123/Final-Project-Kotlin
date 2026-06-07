@@ -70,10 +70,12 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
+                if (position == RecyclerView.NO_POSITION) return
+                
                 val entity = favoritesAdapter.currentList[position]
                 viewModel.deleteFavorite(entity)
-                Snackbar.make(requireView(), "${entity.cityName} deleted", Snackbar.LENGTH_LONG).apply {
-                    setAction("Undo") {
+                Snackbar.make(requireView(), "${entity.cityName} ${getString(R.string.deleted)}", Snackbar.LENGTH_LONG).apply {
+                    setAction(R.string.undo) {
                         viewModel.saveFavorite(entity)
                     }
                     show()

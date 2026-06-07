@@ -24,9 +24,10 @@ class WeatherWorker @AssistedInject constructor(
         return try {
             val favorites = repository.getFavoritesFlow().first()
             for (favorite in favorites) {
-                val result = repository.fetchWeatherByCity(favorite.cityName, Constants.API_KEY)
+                val result = repository.fetchWeatherById(favorite.id, Constants.API_KEY)
                 if (result is Resource.Success && result.data != null) {
                     val updatedEntity = WeatherEntity(
+                        id = result.data.id,
                         cityName = result.data.cityName,
                         temperature = result.data.main.temperature,
                         description = result.data.weatherConditions.firstOrNull()?.description ?: "",

@@ -37,10 +37,11 @@ class AddFavoriteViewModel @Inject constructor(
     fun saveToFavorites(data: CurrentWeatherResponse) {
         viewModelScope.launch {
             val entity = WeatherEntity(
+                id = data.id,
                 cityName = data.cityName,
                 temperature = data.main.temperature,
                 description = data.weatherConditions.firstOrNull()?.description ?: "",
-                iconUrl = WeatherIconLoader.iconUrl(data.weatherConditions.firstOrNull()?.iconCode)
+                iconUrl = data.weatherConditions.firstOrNull()?.iconCode ?: ""
             )
             repository.addToFavorites(entity)
         }

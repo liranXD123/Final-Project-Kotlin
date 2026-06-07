@@ -15,7 +15,8 @@ interface WeatherApi {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric" // Default to Celsius
+        @Query("units") units: String = "metric",
+        @Query("lang") lang: String
     ): Response<CurrentWeatherResponse>
 
     // Query 2: 5-Day / 3-Hour Forecast (Used for ForecastFragment)
@@ -24,7 +25,8 @@ interface WeatherApi {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric"
+        @Query("units") units: String = "metric",
+        @Query("lang") lang: String
     ): Response<ForecastResponse>
 
     // Query 3: Air Pollution API (Fulfills the 3rd unique query requirement)
@@ -39,6 +41,15 @@ interface WeatherApi {
     suspend fun getWeatherByCity(
         @Query("q") cityName: String,
         @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric"
+        @Query("units") units: String = "metric",
+        @Query("lang") lang: String
+    ): Response<CurrentWeatherResponse>
+
+    @GET("data/2.5/weather")
+    suspend fun getWeatherById(
+        @Query("id") cityId: Int,
+        @Query("appid") apiKey: String,
+        @Query("units") units: String = "metric",
+        @Query("lang") lang: String
     ): Response<CurrentWeatherResponse>
 }
