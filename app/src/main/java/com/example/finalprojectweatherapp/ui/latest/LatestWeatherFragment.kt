@@ -26,7 +26,7 @@ class LatestWeatherFragment : Fragment(R.layout.fragment_latest_weather) {
         setupRecyclerView()
         observeViewModel()
 
-        viewModel.startUpdates(15) // Minimum periodic interval is 15 minutes
+        viewModel.startUpdates()
     }
 
     private fun setupRecyclerView() {

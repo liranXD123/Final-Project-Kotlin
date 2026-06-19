@@ -46,11 +46,10 @@ class LatestWeatherViewModel @Inject constructor(
         }
     }
 
-    private var updateInterval = 60000L // Default 1 minute
-
-    fun startUpdates(intervalMinutes: Long) {
+    fun startUpdates() {
+        val intervalMinutes = settingsManager.getUpdateInterval().toLong()
         scheduleWork(intervalMinutes)
-        fetchLatest()
+        fetchLatest(intervalMinutes)
     }
 
     private fun scheduleWork(intervalMinutes: Long) {
@@ -65,7 +64,7 @@ class LatestWeatherViewModel @Inject constructor(
         workManager.enqueue(workRequest)
     }
 
-    private fun fetchLatest() {
+    private fun fetchLatest(intervalMinutes: Long) {
         viewModelScope.launch {
             while (true) {
                 _latestWeather.value = Resource.Loading()
@@ -88,7 +87,7 @@ class LatestWeatherViewModel @Inject constructor(
                     _latestWeather.value = Resource.Success(results)
                 }
                 
-                delay(updateInterval)
+                delay(intervalMinutes * 60 * 1000) // Convert minutes to milliseconds
             }
         }
     }

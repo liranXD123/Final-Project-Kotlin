@@ -17,6 +17,9 @@ class SettingsManager @Inject constructor(
     private val _isCelsius = MutableStateFlow(prefs.getBoolean(KEY_IS_CELSIUS, true))
     val isCelsius: StateFlow<Boolean> = _isCelsius
 
+    private val _updateInterval = MutableStateFlow(prefs.getInt(KEY_UPDATE_INTERVAL, 15))
+    val updateInterval: StateFlow<Int> = _updateInterval
+
     fun setCelsius(enabled: Boolean) {
         prefs.edit().putBoolean(KEY_IS_CELSIUS, enabled).apply()
         _isCelsius.value = enabled
@@ -30,9 +33,17 @@ class SettingsManager @Inject constructor(
     fun getLastUsedUnit(): Boolean = prefs.getBoolean(KEY_LAST_UNIT, true)
     fun setLastUsedUnit(isCelsius: Boolean) = prefs.edit().putBoolean(KEY_LAST_UNIT, isCelsius).apply()
 
+    fun setUpdateInterval(minutes: Int) {
+        prefs.edit().putInt(KEY_UPDATE_INTERVAL, minutes).apply()
+        _updateInterval.value = minutes
+    }
+
+    fun getUpdateInterval(): Int = _updateInterval.value
+
     companion object {
         private const val KEY_IS_CELSIUS = "key_is_celsius"
         private const val KEY_LAST_LANG = "key_last_lang"
         private const val KEY_LAST_UNIT = "key_last_unit"
+        private const val KEY_UPDATE_INTERVAL = "key_update_interval"
     }
 }

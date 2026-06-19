@@ -12,8 +12,13 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val isCelsius = settingsManager.isCelsius.asLiveData()
+    val updateInterval = settingsManager.updateInterval.asLiveData()
 
     fun setUnit(celsius: Boolean) {
         settingsManager.setCelsius(celsius)
+    }
+
+    fun setUpdateInterval(minutes: Int) {
+        settingsManager.setUpdateInterval(minutes)
     }
 }

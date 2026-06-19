@@ -36,6 +36,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         binding.rgUnits.setOnCheckedChangeListener { _, checkedId ->
             viewModel.setUnit(checkedId == R.id.rbCelsius)
         }
+
+        binding.sliderInterval.addOnChangeListener { slider, value, fromUser ->
+            if (fromUser) {
+                viewModel.setUpdateInterval(value.toInt())
+            }
+        }
     }
 
     private fun observeViewModel() {
@@ -45,6 +51,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             } else {
                 binding.rbFahrenheit.isChecked = true
             }
+        }
+
+        viewModel.updateInterval.observe(viewLifecycleOwner) { interval ->
+            binding.sliderInterval.value = interval.toFloat()
         }
     }
 
