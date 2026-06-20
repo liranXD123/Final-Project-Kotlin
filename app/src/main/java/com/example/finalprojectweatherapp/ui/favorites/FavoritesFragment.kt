@@ -14,6 +14,10 @@ import com.example.finalprojectweatherapp.databinding.FragmentFavoritesBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Favorites screen — View layer only.
+ * Observes LiveData and handles user input; does not call Room or Retrofit directly.
+ */
 @AndroidEntryPoint
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
@@ -31,6 +35,10 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         observeViewModel()
     }
 
+    /**
+     * Wires buttons, search, and navigation to Add Favorite.
+     * Add Favorite is a secondary destination — requires explicit navigate(), not bottom nav.
+     */
     private fun setupListeners() {
         binding.btnAddFavorite.setOnClickListener {
             findNavController().navigate(R.id.addFavoriteFragment)
@@ -52,6 +60,14 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         })
     }
 
+    /**
+     * Sets up RecyclerView + ItemTouchHelper for swipe-to-delete with Undo Snackbar.
+     *
+     * Swipe-to-delete flow:
+     * 1. deleteFavorite() → Room delete
+     * 2. Flow updates ViewModel → list refreshes
+     * 3. Snackbar Undo → saveFavorite() re-inserts the same WeatherEntity
+     */
     private fun setupRecyclerView() {
         favoritesAdapter = FavoritesAdapter { entity ->
             // Handle click - maybe go to details
@@ -61,7 +77,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        // Swipe to delete
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -71,7 +86,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 if (position == RecyclerView.NO_POSITION) return
-                
+
                 val entity = favoritesAdapter.currentList[position]
                 viewModel.deleteFavorite(entity)
                 Snackbar.make(requireView(), "${entity.cityName} ${getString(R.string.deleted)}", Snackbar.LENGTH_LONG).apply {
@@ -85,6 +100,10 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.rvFavorites)
     }
 
+    /**
+     * Observes ViewModel LiveData — standard MVVM binding.
+     * favorites → submitList to adapter; isCelsius → reformat temperatures without new API call.
+     */
     private fun observeViewModel() {
         viewModel.isCelsius.observe(viewLifecycleOwner) { isCelsius ->
             favoritesAdapter.isCelsius = isCelsius

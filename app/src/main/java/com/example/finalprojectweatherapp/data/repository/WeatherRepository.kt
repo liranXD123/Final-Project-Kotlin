@@ -14,14 +14,14 @@ import com.example.finalprojectweatherapp.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-// Hilt automatically injects the Api and Dao that we provided in AppModule.kt
+// Hilt injects WeatherApi + WeatherDao from AppModule. ViewModels only talk to this class.
 class WeatherRepository @Inject constructor(
     val weatherApi: WeatherApi,
     private val weatherDao: WeatherDao
 ) {
-    // --- LOCAL DATABASE OPERATIONS ---
+    // --- FAVORITES — Room CRUD + city search API ---
 
-    // Returns a Flow that the UI can observe for automatic updates
+    /** Pass-through to DAO Flow — FavoritesViewModel collects for reactive UI. */
     fun getFavoritesFlow(): Flow<List<WeatherEntity>> = weatherDao.getFavorites()
 
     suspend fun addToFavorites(entity: WeatherEntity) = weatherDao.insertFavorite(entity)
@@ -105,6 +105,10 @@ class WeatherRepository @Inject constructor(
         }
     }
 
+    /**
+     * Add Favorite search: GET weather?q=cityName.
+     * Wraps HTTP result in Resource so ViewModel/Fragment can show loading/error without crashes.
+     */
     suspend fun fetchWeatherByCity(cityName: String, apiKey: String): Resource<CurrentWeatherResponse> {
         return try {
             val response = weatherApi.getWeatherByCity(cityName, apiKey, "metric", LanguageUtils.getSystemLanguage())
@@ -118,6 +122,10 @@ class WeatherRepository @Inject constructor(
         }
     }
 
+    /**
+     * Refresh favorite rows after language/unit change.
+     * Uses city ID so the correct city is fetched regardless of stored name language.
+     */
     suspend fun fetchWeatherById(cityId: Int, apiKey: String): Resource<CurrentWeatherResponse> {
         return try {
             val response = weatherApi.getWeatherById(cityId, apiKey, "metric", LanguageUtils.getSystemLanguage())

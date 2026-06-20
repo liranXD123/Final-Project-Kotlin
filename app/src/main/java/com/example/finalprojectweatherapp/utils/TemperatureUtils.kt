@@ -1,16 +1,18 @@
 package com.example.finalprojectweatherapp.utils
 
+/**
+ * Formats temperatures for display in Favorites list and Add Favorite preview.
+ *
+ * API always returns Celsius (units=metric); conversion happens here for °F display only.
+ */
 object TemperatureUtils {
-    /**
-     * Converts Celsius to Fahrenheit.
-     */
+
     fun toFahrenheit(celsius: Double): Double = (celsius * 9 / 5) + 32
 
     /**
-     * Formats temperature value according to user preference.
-     * @param temp Temperature in Celsius (Metric)
-     * @param isCelsius Whether to display in Celsius
-     * @return Formatted string like "25°C" or "77°F"
+     * @param temp Celsius from API or Room
+     * @param isCelsius from SettingsManager
+     * @return e.g. "25°C" or "77°F"
      */
     fun format(temp: Double, isCelsius: Boolean): String {
         val value = if (isCelsius) temp else toFahrenheit(temp)

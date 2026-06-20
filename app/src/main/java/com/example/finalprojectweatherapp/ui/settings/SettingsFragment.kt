@@ -9,6 +9,10 @@ import com.example.finalprojectweatherapp.R
 import com.example.finalprojectweatherapp.databinding.FragmentSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Settings screen — app-wide preferences.
+ * Dark mode via AppCompatDelegate; units and interval persist in SettingsManager (SharedPreferences).
+ */
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
@@ -24,6 +28,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         observeViewModel()
     }
 
+    /**
+     * User actions → ViewModel → SettingsManager (SharedPreferences + StateFlow).
+     * Other screens (Favorites, Add Favorite) observe the same isCelsius StateFlow.
+     */
     private fun setupListeners() {
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -44,6 +52,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
     }
 
+    /** Syncs UI controls when settings load or change from ViewModel (e.g. after rotation). */
     private fun observeViewModel() {
         viewModel.isCelsius.observe(viewLifecycleOwner) { isCelsius ->
             if (isCelsius) {

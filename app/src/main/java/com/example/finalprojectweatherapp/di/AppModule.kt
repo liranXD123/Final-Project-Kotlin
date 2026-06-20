@@ -16,6 +16,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+/**
+ * Hilt module — provides singletons used app-wide.
+ * ViewModels request WeatherRepository; Hilt builds it from WeatherApi + WeatherDao
+ * without manual new() calls in Activities/Fragments.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -26,19 +31,18 @@ object AppModule {
         return WorkManager.getInstance(context)
     }
 
-    // --- NETWORK INJECTION ---
+    /** Retrofit + Gson → WeatherApi interface for all OpenWeather HTTP calls. */
     @Provides
     @Singleton
     fun provideWeatherApi(): WeatherApi {
         return Retrofit.Builder()
-            // We assume you have a Constants file with BASE_URL = "https://api.openweathermap.org/"
             .baseUrl("https://api.openweathermap.org/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(WeatherApi::class.java)
     }
 
-    // --- DATABASE INJECTION ---
+    /** Room database — favorites_table and forecast_cache live in the same DB. */
     @Provides
     @Singleton
     fun provideWeatherDatabase(@ApplicationContext context: Context): WeatherDatabase {
@@ -47,7 +51,7 @@ object AppModule {
             WeatherDatabase::class.java,
             "weather_db"
         )
-            .fallbackToDestructiveMigration() // Wipes DB if you change the schema (good for dev)
+            .fallbackToDestructiveMigration()
             .build()
     }
 

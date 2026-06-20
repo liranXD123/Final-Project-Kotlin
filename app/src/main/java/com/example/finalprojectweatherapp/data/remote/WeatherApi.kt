@@ -7,9 +7,14 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * Retrofit API interface for OpenWeatherMap.
+ *
+ * suspend functions run on background threads; Gson maps JSON to Kotlin data classes.
+ */
 interface WeatherApi {
 
-    // Query 1: Current weather (Used for HomeFragment and Favorites)
+    // Query 1: Current weather by GPS (Home)
     @GET("data/2.5/weather")
     suspend fun getCurrentWeather(
         @Query("lat") lat: Double,
@@ -19,7 +24,7 @@ interface WeatherApi {
         @Query("lang") lang: String
     ): Response<CurrentWeatherResponse>
 
-    // Query 2: 5-Day / 3-Hour Forecast (Used for ForecastFragment)
+    // Query 2: 5-Day Forecast
     @GET("data/2.5/forecast")
     suspend fun getForecast(
         @Query("lat") lat: Double,
@@ -29,7 +34,7 @@ interface WeatherApi {
         @Query("lang") lang: String
     ): Response<ForecastResponse>
 
-    // Query 3: Air Pollution API (Fulfills the 3rd unique query requirement)
+    // Query 3: Air Pollution
     @GET("data/2.5/air_pollution")
     suspend fun getAirPollution(
         @Query("lat") lat: Double,
@@ -37,6 +42,10 @@ interface WeatherApi {
         @Query("appid") apiKey: String
     ): Response<PollutionResponse>
 
+    /**
+     * Add Favorite: search by city name before saving to Room.
+     * Same /weather endpoint, different query param (q vs lat/lon).
+     */
     @GET("data/2.5/weather")
     suspend fun getWeatherByCity(
         @Query("q") cityName: String,
@@ -45,6 +54,10 @@ interface WeatherApi {
         @Query("lang") lang: String
     ): Response<CurrentWeatherResponse>
 
+    /**
+     * Refresh stored favorite when language changes.
+     * ID is language-independent (unlike city name string).
+     */
     @GET("data/2.5/weather")
     suspend fun getWeatherById(
         @Query("id") cityId: Int,

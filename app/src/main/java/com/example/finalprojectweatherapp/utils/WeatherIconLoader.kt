@@ -6,6 +6,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.finalprojectweatherapp.R
 
+/**
+ * Glide helper for weather icons in the Favorites RecyclerView.
+ * Caches images and handles icon codes stored in Room.
+ */
 object WeatherIconLoader {
 
     private const val ICON_BASE_URL = "https://openweathermap.org/img/wn/"
@@ -16,6 +20,9 @@ object WeatherIconLoader {
         return "$ICON_BASE_URL$code$ICON_SUFFIX"
     }
 
+    /**
+     * Room stores short codes ("01d") or legacy full URLs — normalizes before loading.
+     */
     fun iconUrlFromStored(stored: String?): String {
         if (stored.isNullOrBlank()) return iconUrl(null)
         if (stored.startsWith("http", ignoreCase = true)) {
@@ -32,10 +39,12 @@ object WeatherIconLoader {
         loadUrl(imageView, iconUrl(iconCode))
     }
 
+    /** Called from FavoritesAdapter — loads icon from WeatherEntity.iconUrl field. */
     fun loadFromStored(imageView: ImageView, iconUrlOrCode: String?) {
         loadUrl(imageView, iconUrlFromStored(iconUrlOrCode))
     }
 
+    /** Glide: disk cache + placeholder while loading + error fallback image. */
     private fun loadUrl(imageView: ImageView, url: String) {
         val targetPx = resolveTargetSizePx(imageView)
         Glide.with(imageView)

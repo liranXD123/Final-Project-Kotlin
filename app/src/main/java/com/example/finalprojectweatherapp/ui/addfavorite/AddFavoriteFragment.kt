@@ -11,6 +11,10 @@ import com.example.finalprojectweatherapp.utils.Resource
 import com.example.finalprojectweatherapp.utils.TemperatureUtils
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Add Favorite screen — search city online, preview, save to Room.
+ * Demonstrates Retrofit (search) and Room (save) in one user flow.
+ */
 @AndroidEntryPoint
 class AddFavoriteFragment : Fragment(R.layout.fragment_add_favorite) {
 
@@ -40,6 +44,10 @@ class AddFavoriteFragment : Fragment(R.layout.fragment_add_favorite) {
         observeViewModel()
     }
 
+    /**
+     * Reacts to Resource states from the ViewModel — standard loading/success/error UI pattern.
+     * Also re-formats temperature when user changes °C/°F in Settings while on this screen.
+     */
     private fun observeViewModel() {
         viewModel.isCelsius.observe(viewLifecycleOwner) {
             viewModel.searchResult.value?.let { state ->
@@ -69,6 +77,7 @@ class AddFavoriteFragment : Fragment(R.layout.fragment_add_favorite) {
         }
     }
 
+    /** Shows preview text before save — uses same TemperatureUtils as the favorites list. */
     private fun updateSearchUI(data: com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse) {
         val isCelsius = viewModel.isCelsius.value ?: true
         val tempFormatted = TemperatureUtils.format(data.main.temperature, isCelsius)

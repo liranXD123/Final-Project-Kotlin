@@ -11,11 +11,17 @@ import com.example.finalprojectweatherapp.data.repository.WeatherRepository
 import com.example.finalprojectweatherapp.utils.Constants
 import com.example.finalprojectweatherapp.utils.Resource
 import com.example.finalprojectweatherapp.utils.SettingsManager
-import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for Add Favorite screen.
+ *
+ * Two-step flow:
+ * 1. searchCity() — Retrofit GET weather?q=cityName (network)
+ * 2. saveToFavorites() — map JSON to WeatherEntity → Room insert (local)
+ */
 @HiltViewModel
 class AddFavoriteViewModel @Inject constructor(
     private val repository: WeatherRepository,
@@ -27,6 +33,10 @@ class AddFavoriteViewModel @Inject constructor(
 
     val isCelsius = settingsManager.isCelsius.asLiveData()
 
+    /**
+     * Calls OpenWeatherMap by city name. Posts Loading → Success/Error to LiveData.
+     * Fragment observes searchResult to show spinner, result card, or error toast.
+     */
     fun searchCity(cityName: String) {
         _searchResult.value = Resource.Loading()
         viewModelScope.launch {
@@ -34,6 +44,10 @@ class AddFavoriteViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Converts API response to Room entity and saves.
+     * FavoritesViewModel's Flow listener picks up the insert — list updates without manual refresh.
+     */
     fun saveToFavorites(data: CurrentWeatherResponse) {
         viewModelScope.launch {
             val entity = WeatherEntity(

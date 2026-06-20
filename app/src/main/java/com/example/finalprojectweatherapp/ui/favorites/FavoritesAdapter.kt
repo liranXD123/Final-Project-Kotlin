@@ -10,6 +10,10 @@ import com.example.finalprojectweatherapp.utils.TemperatureUtils
 import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import com.example.finalprojectweatherapp.databinding.ItemFavoriteBinding
 
+/**
+ * RecyclerView adapter for the favorites list.
+ * Uses ListAdapter + DiffUtil for efficient updates; loads icons via WeatherIconLoader (Glide).
+ */
 class FavoritesAdapter(
     private val onItemClicked: (WeatherEntity) -> Unit
 ) : ListAdapter<WeatherEntity, FavoritesAdapter.FavoriteViewHolder>(FavoritesDiffCallback()) {
@@ -38,6 +42,10 @@ class FavoritesAdapter(
             }
         }
 
+        /**
+         * Binds one WeatherEntity row: name, description, formatted temp, and weather icon.
+         * Temperature comes from Room in Celsius; TemperatureUtils converts for display if needed.
+         */
         fun bind(weather: WeatherEntity, isCelsius: Boolean) {
             binding.tvSavedCityName.text = weather.cityName
             binding.tvSavedTemperature.text = TemperatureUtils.format(weather.temperature, isCelsius)
@@ -47,7 +55,10 @@ class FavoritesAdapter(
         }
     }
 
-    // This makes sure the RecyclerView only animates items that actually changed
+    /**
+     * DiffUtil compares old vs new list so RecyclerView only animates actual changes.
+     * areItemsTheSame: same city ID = same row; areContentsTheSame: full data equality.
+     */
     class FavoritesDiffCallback : DiffUtil.ItemCallback<WeatherEntity>() {
         override fun areItemsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
             return oldItem.id == newItem.id

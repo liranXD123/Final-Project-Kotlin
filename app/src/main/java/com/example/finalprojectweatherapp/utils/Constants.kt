@@ -1,5 +1,6 @@
 package com.example.finalprojectweatherapp.utils
 
+/** OpenWeatherMap configuration — API key used by Repository. */
 object Constants {
     const val BASE_URL = "https://api.openweathermap.org/"
 
