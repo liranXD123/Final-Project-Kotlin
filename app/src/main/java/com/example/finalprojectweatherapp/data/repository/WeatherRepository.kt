@@ -14,7 +14,7 @@ import com.example.finalprojectweatherapp.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-// Hilt automatically injects the Api and Dao that we provided in AppModule.kt
+// hilt automatically injects the Api and Dao from AppModule.kt
 class WeatherRepository @Inject constructor(
     val weatherApi: WeatherApi,
     private val weatherDao: WeatherDao

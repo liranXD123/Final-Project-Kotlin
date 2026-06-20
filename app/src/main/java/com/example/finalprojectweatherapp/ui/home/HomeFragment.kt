@@ -46,40 +46,35 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentHomeBinding.bind(view)
+        _binding = FragmentHomeBinding.bind(view) // bind the xml
+        // init location client
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        // Initialize button click listeners
+        // init button click listeners
         setupListeners()
-        // Start observing LiveData from the ViewModel
+        // start observing the live data model
         observeViewModel()
 
-        // Check for location permissions immediately
+        // instantly check for location permission
         if (hasLocationPermission()) {
-            // Fetch weather data if permission exists
             refreshWeather()
         } else {
-            // Request location permission from the user
+            // if we dont have permission request it from user
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
-    /**
-     * Configures the click listeners for UI interactive elements.
-     */
     private fun setupListeners() {
-        // Set click listener for the refresh button
+        // bind refresh button to refresh weather func
         binding.btnRefresh.setOnClickListener {
-            // Trigger a manual weather update
             refreshWeather()
         }
-        // Set click listener for the air pollution details button
+        // bind air pollution details button
         binding.btnViewPollution.setOnClickListener {
-            // Use last known latitude or a default fallback
+            // use the saved coordinates or default if none saved
             val lat = viewModel.lastLatitude ?: 34.05
-            // Use last known longitude or a default fallback
             val lon = viewModel.lastLongitude ?: -118.24
-            // Navigate to the PollutionFragment passing coordinates as arguments
+            // navigate to the pollution fragment with the coordinates
             findNavController().navigate(
                 R.id.action_homeFragment_to_pollutionFragment,
                 bundleOf("lat" to lat.toFloat(), "lon" to lon.toFloat())
@@ -87,219 +82,156 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    /**
-     * Verifies if the ACCESS_FINE_LOCATION permission is granted.
-     * @return True if permission is granted, false otherwise.
-     */
+    // helper to make sure we have location permission
     private fun hasLocationPermission(): Boolean {
-        // Check current permission status via ContextCompat
         return ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    /**
-     * Main logic for refreshing weather data.
-     * Handles permissions, caching, and fresh location requests.
-     */
     private fun refreshWeather() {
-        // Verify location permissions before proceeding
         if (!hasLocationPermission()) {
-            // Launch permission request if missing
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            // Exit early if permission is not granted
+            // if we dont have permission we don't refresh weather
             return
         }
-
-        // Display the loading overlay to the user
         setRefreshInProgress(true)
 
-        // Attempt a fast refresh using coordinates already stored in memory
+        // if we already have location we do quick refresh
         val usedCache = viewModel.refreshWithCachedLocation()
 
-        // Fetch the current device location asynchronously
+        // sync func to get device location
         requestCurrentLocation { lat, lon ->
-            // Determine if the latitude has changed significantly
             val latChanged = viewModel.lastLatitude?.let { kotlin.math.abs(it - lat) > 0.001 } ?: true
-            // Determine if the longitude has changed significantly
             val lonChanged = viewModel.lastLongitude?.let { kotlin.math.abs(it - lon) > 0.001 } ?: true
-            // If cache wasn't used or location is different, fetch new weather
+            // if we didnt have cache or location changed we refresh
             if (!usedCache || latChanged || lonChanged) {
-                // Request new weather data from the network
                 viewModel.loadWeatherForLocation(lat, lon)
             }
         }
     }
 
-    /**
-     * Requests the current GPS location from the FusedLocationProviderClient.
-     * @param onLocation Lambda callback function invoked with latitude and longitude.
-     */
     private fun requestCurrentLocation(onLocation: (lat: Double, lon: Double) -> Unit) {
-        // Stop any currently running location requests
+        // stop any existing loc request
         cancelLocationRequest()
 
-        // Create a new source for the cancellation token
+        // init cencellation token
         val tokenSource = CancellationTokenSource()
-        // Save the source to the property for later cancellation
         locationRequestToken = tokenSource
 
-        // Configure the location request settings
+        // config for the req
         val request = CurrentLocationRequest.Builder()
             .setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
             .setMaxUpdateAgeMillis(60_000)
             .build()
 
-        // Call Google Play Services to get the current location
+        // get current location
         fusedLocationClient.getCurrentLocation(request, tokenSource.token)
             .addOnSuccessListener { location ->
-                // If a valid location was returned
                 if (location != null) {
-                    // Send coordinates back through the callback
                     onLocation(location.latitude, location.longitude)
                 } else {
-                    // Try to get the last known location as a fallback
+                    // fallback if phone location is unavailable
                     tryLastKnownLocation(onLocation)
                 }
             }
             .addOnFailureListener {
-                // Try fallback location if the request fails
+                // fallback if the request fails
                 tryLastKnownLocation(onLocation)
             }
     }
 
-    /**
-     * Attempts to retrieve the last recorded location on the device.
-     * @param onLocation Lambda callback function invoked with latitude and longitude.
-     */
     private fun tryLastKnownLocation(onLocation: (lat: Double, lon: Double) -> Unit) {
-        // Access the last known location from the client
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
-                // If a last known location exists
                 if (location != null) {
-                    // Send coordinates back through the callback
+                    // send coordinates back through the callback
                     onLocation(location.latitude, location.longitude)
                 } else if (!viewModel.hasCachedLocation()) {
-                    // Handle failure if no location is available anywhere
                     onLocationUnavailable()
                 }
             }
             .addOnFailureListener {
-                // If failure and no coordinates cached, notify the user
                 if (!viewModel.hasCachedLocation()) {
-                    // Show error UI for unavailable location
+                    // notify users if we failed and we have no cache
                     onLocationUnavailable()
                 }
             }
     }
 
-    /**
-     * Displays a toast and resets UI state when location cannot be determined.
-     */
+    // renders a toast with location unavailble error
     private fun onLocationUnavailable() {
-        // Turn off the loading indicator
         setRefreshInProgress(false)
-        // Inform the user that location services failed
         Toast.makeText(requireContext(), R.string.location_unavailable, Toast.LENGTH_SHORT).show()
     }
 
-    /**
-     * Switches the UI between loading state and content state.
-     * @param inProgress If true, shows loading; if false, shows weather data.
-     */
+    // toggle loading state on the UI
     private fun setRefreshInProgress(inProgress: Boolean) {
-        // Set visibility of the loading overlay layout
         binding.layoutLoadingOverlay.isVisible = inProgress
-        // Set visibility of the weather data container
         binding.layoutWeatherContent.isVisible = !inProgress
-        // Disable refresh button while loading to prevent multiple triggers
         binding.btnRefresh.isEnabled = !inProgress
     }
 
-    /**
-     * Cancels the active location request token.
-     */
+    // utility to cancel a location request
     private fun cancelLocationRequest() {
-        // Call cancel on the token source if it exists
         locationRequestToken?.cancel()
-        // Nullify the token reference
         locationRequestToken = null
     }
 
-    /**
-     * Initializes the LiveData observers to update UI on data changes.
-     */
+    // init observers to update UI elements
     private fun observeViewModel() {
-        // Observe changes to the temperature unit setting (Celsius/Fahrenheit)
+        // observer for (Celsius/Fahrenheit)
         viewModel.isCelsius.observe(viewLifecycleOwner) {
-            // If weather data is already loaded
+            // if weather data is loaded update the UI
             viewModel.weatherState.value?.let { state ->
-                // Ensure the state is successful before updating
                 if (state is Resource.Success) {
-                    // Re-render the UI with the updated unit
                     updateWeatherUI(state.data!!)
                 }
             }
         }
 
-        // Observe the main weather data state from the repository
+        // observer for weather data
         viewModel.weatherState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                // When data is being fetched
                 is Resource.Loading -> setRefreshInProgress(true)
-                // When data is successfully retrieved
                 is Resource.Success -> {
-                    // Hide the loading spinner
                     setRefreshInProgress(false)
-                    // Extract data and update views
                     state.data?.let { data ->
-                        // Populate UI with weather info
                         updateWeatherUI(data)
                     }
                 }
-                // When an error occurs during fetch
+                // if an error occurs show a toast
                 is Resource.Error -> {
-                    // Hide the loading spinner
                     setRefreshInProgress(false)
-                    // Show error message via toast
                     Toast.makeText(requireContext(), state.message ?: getString(R.string.error_unknown), Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
-    /**
-     * Updates individual UI components with data from a CurrentWeatherResponse.
-     * @param data The weather response data object.
-     */
+    // update ui components with weather data
     private fun updateWeatherUI(data: com.example.finalprojectweatherapp.data.remote.models.CurrentWeatherResponse) {
-        // Determine the current temperature unit from the ViewModel
+        // get current unit from settings
         val isCelsius = viewModel.isCelsius.value ?: true
-        // Set the city name text view
+        // set city name
         binding.tvCityName.text = data.cityName
-        // Format the temperature and set it to the text view
+        // format and set temperature
         binding.tvTemperature.text = TemperatureUtils.format(data.main.temperature, isCelsius)
-        // Set the humidity percentage text view
+        // set humidity
         binding.tvHumidity.text = getString(R.string.humidity_format, data.main.humidity)
 
-        // Use the Glide utility to load the weather icon from the web
+        // load weather icon (optimized with glide utility)
         WeatherIconLoader.load(
             binding.ivWeatherIcon,
             data.weatherConditions.firstOrNull()?.iconCode
         )
     }
 
-    /**
-     * Standard Fragment cleanup called when the view is destroyed.
-     */
+    // cleanup when view is destroyed
     override fun onDestroyView() {
-        // Clean up pending location requests
         cancelLocationRequest()
-        // Call super method for standard cleanup
         super.onDestroyView()
-        // Prevent memory leaks by clearing the binding reference
         _binding = null
     }
 }
