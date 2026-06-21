@@ -11,6 +11,10 @@ import com.example.finalprojectweatherapp.databinding.FragmentLatestWeatherBindi
 import com.example.finalprojectweatherapp.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment displaying a live feed of weather for selected global cities.
+ * Triggers periodic background updates via the ViewModel to keep data fresh.
+ */
 @AndroidEntryPoint
 class LatestWeatherFragment : Fragment(R.layout.fragment_latest_weather) {
 

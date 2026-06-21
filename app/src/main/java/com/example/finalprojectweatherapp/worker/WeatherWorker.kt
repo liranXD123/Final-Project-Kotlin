@@ -13,6 +13,11 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.first
 
+/**
+ * Background worker managed by WorkManager.
+ * Wakes up periodically to fetch the latest weather for all saved favorite cities
+ * and securely updates the local Room database, ensuring data is fresh even if the app is closed.
+ */
 @HiltWorker
 class WeatherWorker @AssistedInject constructor(
     @Assisted context: Context,
@@ -22,8 +27,11 @@ class WeatherWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
+            // Take a single snapshot of the database using .first()
             val favorites = repository.getFavoritesFlow().first()
+
             for (favorite in favorites) {
+                // Fetching by unique ID instead of city name prevents errors with identical city names globally
                 val result = repository.fetchWeatherById(favorite.id, Constants.API_KEY)
                 if (result is Resource.Success && result.data != null) {
                     val updatedEntity = WeatherEntity(
@@ -35,6 +43,7 @@ class WeatherWorker @AssistedInject constructor(
                             result.data.weatherConditions.firstOrNull()?.iconCode
                         )
                     )
+                    // @Insert(REPLACE) inside the DAO handles the update seamlessly
                     repository.addToFavorites(updatedEntity)
                 }
             }

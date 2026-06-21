@@ -4,6 +4,10 @@ import com.example.finalprojectweatherapp.data.remote.models.ForecastItem
 import com.example.finalprojectweatherapp.data.remote.models.MainStats
 import com.example.finalprojectweatherapp.data.remote.models.WeatherCondition
 
+/**
+ * Maps a complex Remote API model (ForecastItem) to a flat Room entity (ForecastEntity).
+ * Discards unnecessary API data to save RAM and device storage.
+ */
 fun ForecastItem.toForecastEntity(locationKey: String): ForecastEntity {
     val weather = weatherConditions.firstOrNull()
     return ForecastEntity(
@@ -16,6 +20,9 @@ fun ForecastItem.toForecastEntity(locationKey: String): ForecastEntity {
     )
 }
 
+/**
+ * Maps a Room entity back to the UI model expected by the RecyclerView adapter.
+ */
 fun ForecastEntity.toForecastItem(): ForecastItem {
     return ForecastItem(
         dateTime = dateTime,

@@ -22,6 +22,11 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * ViewModel for the "Right Now" screen.
+ * Fetches current weather for multiple localized cities and schedules a WorkManager task
+ * to keep data updated in the background based on user-defined intervals.
+ */
 @HiltViewModel
 class LatestWeatherViewModel @Inject constructor(
     private val repository: WeatherRepository,
@@ -52,6 +57,10 @@ class LatestWeatherViewModel @Inject constructor(
         fetchLatest(intervalMinutes)
     }
 
+    /**
+     * Registers a periodic worker with constraints to run only on active network connections,
+     * saving battery and preventing unnecessary failed network calls.
+     */
     private fun scheduleWork(intervalMinutes: Long) {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -70,7 +79,7 @@ class LatestWeatherViewModel @Inject constructor(
                 _latestWeather.value = Resource.Loading()
                 val results = mutableListOf<CurrentWeatherResponse>()
                 var hasError = false
-                
+
                 val cities = getLocalizedCities()
                 for (city in cities) {
                     val result = repository.fetchWeatherByCity(city, Constants.API_KEY)
@@ -86,7 +95,8 @@ class LatestWeatherViewModel @Inject constructor(
                 } else {
                     _latestWeather.value = Resource.Success(results)
                 }
-                
+
+                // Suspends the coroutine for the set interval without blocking the Main Thread
                 delay(intervalMinutes * 60 * 1000) // Convert minutes to milliseconds
             }
         }

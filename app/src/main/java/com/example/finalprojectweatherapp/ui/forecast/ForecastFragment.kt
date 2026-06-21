@@ -21,6 +21,11 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment displaying the weekly forecast.
+ * Handles location permissions and fetches the user's current coordinates asynchronously
+ * using FusedLocationProviderClient to load the relevant localized forecast.
+ */
 @AndroidEntryPoint
 class ForecastFragment : Fragment(R.layout.fragment_forecast) {
 
@@ -78,6 +83,10 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         }
     }
 
+    /**
+     * Requests location updates using a CancellationTokenSource.
+     * This ensures the request can be cleanly cancelled if the Fragment is destroyed, preventing memory leaks.
+     */
     private fun requestCurrentLocation(onLocation: (lat: Double, lon: Double) -> Unit) {
         cancelLocationRequest()
 
@@ -176,6 +185,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
                 }
                 is Resource.Success -> {
                     binding.progressBarForecast.visibility = View.GONE
+                    // Uses DiffUtil under the hood to efficiently update the list
                     forecastAdapter.submitList(state.data)
                 }
                 is Resource.Error -> {

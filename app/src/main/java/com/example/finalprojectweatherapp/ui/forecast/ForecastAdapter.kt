@@ -10,6 +10,11 @@ import com.example.finalprojectweatherapp.utils.TemperatureUtils
 import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import com.example.finalprojectweatherapp.databinding.ItemForecastBinding
 
+/**
+ * RecyclerView adapter for the weekly forecast list.
+ * Uses ListAdapter + DiffUtil for efficient updates without reloading the entire list;
+ * loads icons asynchronously via WeatherIconLoader.
+ */
 class ForecastAdapter : ListAdapter<ForecastItem, ForecastAdapter.ForecastViewHolder>(DiffCallback()) {
 
     var isCelsius: Boolean = true
@@ -24,6 +29,11 @@ class ForecastAdapter : ListAdapter<ForecastItem, ForecastAdapter.ForecastViewHo
     }
 
     class ForecastViewHolder(private val binding: ItemForecastBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        /**
+         * Binds data to the view, formats the date locally, and converts the temperature
+         * using TemperatureUtils based on user settings.
+         */
         fun bind(item: ForecastItem, isCelsius: Boolean) {
             // Prettier date formatting
             val displayDate = try {
@@ -37,7 +47,7 @@ class ForecastAdapter : ListAdapter<ForecastItem, ForecastAdapter.ForecastViewHo
 
             binding.tvForecastTime.text = displayDate
             binding.tvForecastTemp.text = TemperatureUtils.format(item.main.temperature, isCelsius)
-            
+
             WeatherIconLoader.load(
                 binding.ivForecastIcon,
                 item.weatherConditions.firstOrNull()?.iconCode
@@ -45,6 +55,9 @@ class ForecastAdapter : ListAdapter<ForecastItem, ForecastAdapter.ForecastViewHo
         }
     }
 
+    /**
+     * DiffUtil compares old vs new lists so RecyclerView only animates actual changed rows.
+     */
     class DiffCallback : DiffUtil.ItemCallback<ForecastItem>() {
         override fun areItemsTheSame(oldItem: ForecastItem, newItem: ForecastItem) = oldItem.dateTime == newItem.dateTime
         override fun areContentsTheSame(oldItem: ForecastItem, newItem: ForecastItem) = oldItem == newItem

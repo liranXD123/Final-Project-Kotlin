@@ -10,6 +10,10 @@ import com.example.finalprojectweatherapp.utils.TemperatureUtils
 import com.example.finalprojectweatherapp.utils.WeatherIconLoader
 import com.example.finalprojectweatherapp.databinding.ItemLatestWeatherBinding
 
+/**
+ * RecyclerView adapter for the multi-city live feed.
+ * Uses ListAdapter + DiffUtil for efficient UI updates and prevents full list re-renders.
+ */
 class LatestWeatherAdapter : ListAdapter<CurrentWeatherResponse, LatestWeatherAdapter.LatestViewHolder>(DiffCallback()) {
 
     var isCelsius: Boolean = true

@@ -35,6 +35,10 @@ interface WeatherDao {
 
     // --- FORECAST CACHE — API → Room → UI ---
 
+    /**
+     * Returns a continuous Flow of the forecast cache.
+     * Room automatically pushes new lists to the observing UI whenever the table updates.
+     */
     @Query("SELECT * FROM forecast_cache WHERE locationKey = :locationKey ORDER BY dateTime ASC")
     fun observeForecast(locationKey: String): Flow<List<ForecastEntity>>
 
@@ -47,6 +51,10 @@ interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertForecastItems(items: List<ForecastEntity>)
 
+    /**
+     * Atomic transaction to clear old forecast data and insert new data safely.
+     * Prevents an empty database state if the app crashes midway through the operation.
+     */
     @Transaction
     suspend fun replaceForecastForLocation(locationKey: String, items: List<ForecastEntity>) {
         clearForecastForLocation(locationKey)

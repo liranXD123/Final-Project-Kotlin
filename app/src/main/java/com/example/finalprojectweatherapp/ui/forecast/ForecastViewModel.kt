@@ -17,6 +17,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the forecast screen.
+ * Implements an Offline-First architecture (Single Source of Truth) by observing the Room database
+ * via Flow, while simultaneously fetching fresh data from the API in the background.
+ */
 @HiltViewModel
 class ForecastViewModel @Inject constructor(
     private val repository: WeatherRepository,
@@ -36,6 +41,9 @@ class ForecastViewModel @Inject constructor(
      */
     fun loadForecast(lat: Double, lon: Double) {
         observeJob?.cancel()
+
+        // Part 1: Open a continuous Flow pipe from Room DB.
+        // Emits automatically when the DB table is updated.
         observeJob = viewModelScope.launch {
             repository.observeForecast(lat, lon).collectLatest { entities ->
                 if (entities.isNotEmpty()) {
@@ -44,6 +52,7 @@ class ForecastViewModel @Inject constructor(
             }
         }
 
+        // Part 2: Fetch fresh data from the remote API asynchronously.
         viewModelScope.launch {
             val hasCache = repository.getCachedForecast(lat, lon).isNotEmpty()
             if (!hasCache) {
@@ -52,6 +61,7 @@ class ForecastViewModel @Inject constructor(
 
             when (val refreshResult = repository.refreshForecast(lat, lon, Constants.API_KEY)) {
                 is Resource.Error -> {
+                    // Fault tolerance: Only show an error if we have no cached data to display
                     if (_forecastState.value !is Resource.Success) {
                         _forecastState.value = Resource.Error(
                             refreshResult.message ?: "Network error. Check connection."

@@ -14,14 +14,14 @@ import com.example.finalprojectweatherapp.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-// Hilt injects WeatherApi + WeatherDao from AppModule. ViewModels only talk to this class.
+// Hilt automatically injects the Api and Dao that we provided in AppModule.kt
 class WeatherRepository @Inject constructor(
     val weatherApi: WeatherApi,
     private val weatherDao: WeatherDao
 ) {
-    // --- FAVORITES — Room CRUD + city search API ---
+    // --- LOCAL DATABASE OPERATIONS ---
 
-    /** Pass-through to DAO Flow — FavoritesViewModel collects for reactive UI. */
+    // Returns a Flow that the UI can observe for automatic updates
     fun getFavoritesFlow(): Flow<List<WeatherEntity>> = weatherDao.getFavorites()
 
     suspend fun addToFavorites(entity: WeatherEntity) = weatherDao.insertFavorite(entity)
@@ -32,6 +32,9 @@ class WeatherRepository @Inject constructor(
 
     // --- FORECAST CACHE (observe Room, refresh from API) ---
 
+    /**
+     * Exposes the Room database Flow to the ViewModel.
+     */
     fun observeForecast(lat: Double, lon: Double): Flow<List<ForecastEntity>> {
         val locationKey = forecastLocationKey(lat, lon)
         return weatherDao.observeForecast(locationKey)
@@ -42,8 +45,9 @@ class WeatherRepository @Inject constructor(
     }
 
     /**
-     * Fetches forecast from Retrofit, saves to Room, and returns any network error.
-     * UI should observe [observeForecast] for displayed data.
+     * Fetches fresh forecast from Retrofit, maps it to Entities, and saves it to Room.
+     * The UI will automatically receive the update through the observeForecast Flow.
+     * Handles network errors by returning a wrapped Resource object.
      */
     suspend fun refreshForecast(lat: Double, lon: Double, apiKey: String): Resource<Unit> {
         val locationKey = forecastLocationKey(lat, lon)
@@ -105,10 +109,6 @@ class WeatherRepository @Inject constructor(
         }
     }
 
-    /**
-     * Add Favorite search: GET weather?q=cityName.
-     * Wraps HTTP result in Resource so ViewModel/Fragment can show loading/error without crashes.
-     */
     suspend fun fetchWeatherByCity(cityName: String, apiKey: String): Resource<CurrentWeatherResponse> {
         return try {
             val response = weatherApi.getWeatherByCity(cityName, apiKey, "metric", LanguageUtils.getSystemLanguage())
@@ -122,10 +122,6 @@ class WeatherRepository @Inject constructor(
         }
     }
 
-    /**
-     * Refresh favorite rows after language/unit change.
-     * Uses city ID so the correct city is fetched regardless of stored name language.
-     */
     suspend fun fetchWeatherById(cityId: Int, apiKey: String): Resource<CurrentWeatherResponse> {
         return try {
             val response = weatherApi.getWeatherById(cityId, apiKey, "metric", LanguageUtils.getSystemLanguage())
